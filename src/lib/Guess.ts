@@ -1,10 +1,20 @@
 import _                from 'lodash'
 import { Dicts }        from './Dicts'
+import * as TY          from './types.js'
 
 const Bowdlerizers = _.range(0, 15).map((len) => new RegExp(`^(.*?)(.{0,${len}})$`))
 
-class Guess {
-  constructor(wd, roundel) {
+class Guess implements TY.Guess {
+  word:     string
+  len:      number
+  score:    number
+  isPan:    boolean
+  scr:      boolean
+  nyt:      boolean
+  valid:    boolean
+  hasMain:  boolean
+
+  constructor(wd: string, roundel: TY.Roundel) {
     this.word    = wd.toLowerCase()
     this.len     = this.word.length
     this.isPan   = roundel.isPan(this.word)
@@ -12,10 +22,10 @@ class Guess {
     this.nyt     = Dicts.isNyt(this.word)
     this.valid   = (this.scr || this.nyt)
     this.hasMain = roundel.hasMain(this.word)
-    this.score   = this.getScore(this.word)
+    this.score   = this.getScore()
   }
 
-  revealed(reveal) {
+  revealed(reveal: number): string {
     if (! _.isNumber(reveal)) { return this.word }
     const stars   = _.padEnd('', (this.len - reveal), '*')
     if (reveal <= 0) { return stars }
@@ -25,23 +35,23 @@ class Guess {
       (_m, hide, show) => (stars + show)) // eslint-disable-line
   }
 
-  getScore() {
+  getScore(): number {
     if (this.nogo)      return 0
     if (! this.nyt)     return 0
     if (this.len === 4) return 1
     return this.len + (this.isPan ? 7 : 0)
   }
 
-  get nogo() {
+  get nogo(): boolean {
     return ((! this.valid) || (! this.hasMain) || (this.len < 4))
   }
 
-  get color() {
+  get color(): string {
     if (! this.valid) return '#eecccc'
     if (this.isPan)   return '#ddddff'
     if (this.nyt)     return '#cceecc'
     return 'dddddd'
   }
-
 }
+
 export default Guess

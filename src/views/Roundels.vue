@@ -3,46 +3,18 @@
     Lexy Roundel
   </h1>
 
-  <div v-if="(! assetsLoaded) && (assetsLoadErr === null)" class="app-loading">
-    Loading requisite assets... {assetsLoadErr} {assetsLoaded}
-  </div>
 
-  <div v-else class="max-w-5xl 2xl:max-w-7xl w-full px-4 pb-6 xl:px-0 mx-auto">
+  <template v-for="roundelDNA of roundelDNAs" :key="roundelDNA.letters">
+    <roundel-row @click="() => navToGuesser(roundelDNA)" >roundelDNA</roundel-row>
+  </template>
 
-    <base-error-boundary v-if="playerID" :key="`${playerID}:${refreshID}`">
-
-      <suspense>
-        <template #default>
-          <div>
-            <span>Player ID: {{ playerID }}</span>
-
-            <template v-for="roundelDNA of roundelDNAs" :key="roundelDNA.letters">
-              <roundel-row @click="() => navToGuesser(roundelDNA)" >roundelDNA</roundel-row>
-            </template>
-
-          </div>
-        </template>
-        <template #fallback>
-          <base-loading />
-        </template>
-      </suspense>
-
-    </base-error-boundary>
-  </div>
-  <div class="h-[200px] flex flex-col items-center justify-end"><span class="flex">v:2022-06-05-c</span></div>
 </template>
 
 <script lang="ts">
 import _                           /**/ from 'lodash'
-import { defineComponent, PropType, ref, toRefs, watch } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { onBeforeRouteUpdate, useRouter, RouteLocationNormalized } from 'vue-router'
 
-// import { getSavedPlayerID, savePlayerID } from 'lib'
-function getSavedPlayerID() { return 'flip' }
-function savePlayerID(id: string) { console.log('saved player ID', id) }
-
-import BaseErrorBoundary    from 'ui/components/BaseErrorBoundary.vue'
-import BaseLoading          from 'ui/components/BaseLoading.vue'
 import RoundelRow           from '@/components/RoundelRow.vue'
 
 //
@@ -58,7 +30,7 @@ interface Roundel {
 }
 
 export default defineComponent({
-  components: { BaseErrorBoundary, BaseLoading, RoundelRow },
+  components: { RoundelRow },
   props: {
     playerID:   { type: String as PropType<string | undefined>,     default: undefined },
     // bookmark:   { type: String as PropType<Bookmarker | undefined>, required: false, default: DEFAULT_BOOKMARK },
@@ -117,7 +89,7 @@ export default defineComponent({
      *   this.refreshID = Date.now()
      *   savePlayerID(id)
      * }, */
-    completeParams(overrides: Partial<RoundelParams>) {
+    completeParams(overrides: Partial<GuesserParams>) {
       // @ts-ignore
       return _.merge({}, this.$route.params, overrides)
     },

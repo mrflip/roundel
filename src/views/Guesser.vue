@@ -11,15 +11,16 @@
   {{ roundel.guesses }}
 
   <input
-    :id="guess"
-    :name="guess"
+    ref="word"
+    :id="word"
+    :name="word"
+    :v-model="word"
+    @input="setWord(($event.target as any).value)"
     class="p-2 text-sm w-[16rem] xs:w-[24rem] sm:w-64 md:w-40 order-3 md:order-first bg-violet-50"
-    :value="guess"
-    @input="this.setGuess(($event.target as any).value)"
-    @keyup.enter="() => submitGuess()"
   />
+  {{ word }} {{ normedWord }}
   <button
-    @click="() => this.$emit('submitGuess')"
+    @click="() => $emit('submitWord')"
     class="submit my-1 mx-2 w-10 py-2 px-2 h-10 flex m-auto items-center justify-center border border-transparent rounded-md shadow-sm text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
   >
     Guess!
@@ -33,7 +34,16 @@ import _ from 'lodash'
 import { defineComponent, PropType, ref, toRefs, watch }            from 'vue'
 import { onBeforeRouteUpdate, useRouter, RouteLocationNormalized }  from 'vue-router'
 import ButtonKeys                       from '@/components/ButtonKeys.vue'
-import Roundel                          from '@/lib/Roundel.js'
+import RoundelLib                       from '@/lib/Roundel'
+import Guess                            from '@/lib/Guess'
+import * as TY                          from '@/lib/types'
+
+/* :value="normedWord"
+   @input="setWord(($event.target as any).value)"
+   @change="setWord(($event.target as any).value)"
+   @keyup.enter="() => submitWord()" */
+
+const Roundel: any = RoundelLib
 
 interface GuesserParams {
   letters:      string
@@ -47,19 +57,20 @@ export default defineComponent({
   },
   data() {
     const { letters } = this
-    const guess = ''
+    const word = ''
     const dashedLetters: string = `${letters.slice(0, 1)}-${letters.slice(1)}`
-    const gooduns = []
-    const bogons = []
-    const missing = []
+    const gooduns: TY.Guess[] = []
+    const bogons:  TY.Guess[] = []
+    const missing: TY.Guess[] = []
     const roundel = new Roundel(letters)
     return {
-      guess,
+      word,
       dashedLetters,
       gooduns,
       bogons,
       missing,
       roundel,
+      forceUpdate: Date.now(),
     }
   },
 
@@ -70,24 +81,30 @@ export default defineComponent({
   computed: {
     letterSets() {
     },
+    normedWord: { get() { return this.word }, set(val) { this.$emit('setWord', val) } },
   },
 
   methods: {
-    setGuess(guess) {
-      console.log('setGuess', guess, this.roundel.normEntry(guess), this.roundel)
-      this.guess = this.roundel.normEntry(guess.toLowerCase())
+    setWord(word: string) {
+      console.log('setWord', word, this.roundel.normEntry(word), this.roundel)
+      const normed = this.roundel.normEntry(word)
+      this.word = normed
+      this.forceUpdate = Date.now()
+      this.$refs.word.value = normed
+      console.log(this.word, normed, word, this.$refs.word)
     },
-    insertLetter(letter) {
+    insertLetter(letter: string) {
       console.log('insertLetter', letter)
-      this.setGuess(this.guess + letter.toLowerCase())
+      this.setWord(this.word + letter.toLowerCase())
     },
     delLetter() {
       console.log('delLetter')
-      this.guess = this.guess.slice(0, -1)
+      this.word = this.word.slice(0, -1)
     },
-    submitGuess() {
-      this.gooduns.push({ word: this.guess, score: 2 })
-      this.guess = ''
+    submitWord() {
+      const guess = new Guess(this.word, this.roundel)
+      this.gooduns.push(guess)
+      this.word = ''
     }
   },
 

@@ -2,9 +2,9 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-@import 'ui/styles/base';
-@import 'ui/styles/app-loading';
-@import 'ui/styles/tippy';
+@import 'styles/base';
+@import 'styles/app-loading';
+@import 'styles/tippy';
 
 @font-face {
   font-family: 'Always Together';

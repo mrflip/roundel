@@ -8,7 +8,9 @@ const config = {
   base: '/inventory-visualizer/',
   resolve: {
     alias: {
-      '@':  path.resolve(__dirname, './src'),
+      '@':      path.resolve(__dirname, './src'),
+      'styles': path.resolve(__dirname, './styles'),
+      'data':   path.resolve(__dirname, './data'),
     },
   },
   plugins: [vue()],

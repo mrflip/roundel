@@ -3,7 +3,7 @@
 
     <template v-for="[letter, idxCC] of lettersList" :key="letter">
       <button
-        @click="() => this.$emit('insertLetter', letter)"
+        @click="() => $emit('insertLetter', letter)"
         :class="`ltr my-1 mx-2 w-10 py-2 px-2 h-10 flex m-auto items-center justify-center border border-transparent rounded-md shadow-sm text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 ${idxCC}`"
       >
         {{ letter }}
@@ -11,7 +11,7 @@
     </template>
 
     <button
-      @click="() => this.$emit('delLetter')"
+      @click="() => $emit('delLetter')"
       class="bksp my-1 mx-2 w-10 py-2 px-2 h-10 flex m-auto items-center justify-center border border-transparent rounded-md shadow-sm text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
     >
       &lt;-
@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import _                           /**/ from 'lodash'
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue'
 //
 export default defineComponent({
   name: "ButtonKeys",
@@ -33,7 +33,7 @@ export default defineComponent({
   emits: ['insertLetter', 'delLetter'],
   //
   data() {
-    const lettersList: string[] = _.map(this.letters.split(''), (ltr, idx) => [ltr, `ltr${idx}`])
+    const lettersList: [string, string][] = _.map(this.letters.split(''), (ltr, idx) => [ltr, `ltr${idx}`])
     return {
       lettersList,
     }
