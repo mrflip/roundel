@@ -56,14 +56,12 @@ function mergeLoaded<T>(parsed: Partial<T>, fallback: T): T {
 }
 
 export function storeRoundel(roundel: TY.Roundel) {
-  console.log('storeRoundel', roundel.serialize())
   storeBag(roundel.letters, roundel.serialize())
-  console.log('see?', loadRoundel(roundel.letters))
 }
 
-export function loadRoundel(raw: string): Roundel {
-  const letters = Roundel.normalize(raw)
-  const bag = loadBag<Roundel>(letters)
-  console.log('loadRoundel', letters, bag)
-  return Roundel.from(bag ?? { letters })
+export function loadRoundel(raw: Partial<Roundel>): Roundel {
+  const letters = Roundel.normalize(raw.letters!)
+  const loaded  = loadBag<Roundel>(letters)
+  const bag = _.merge({}, loaded || {}, raw, { letters, stored: (!! loaded) })
+  return bag as Roundel
 }

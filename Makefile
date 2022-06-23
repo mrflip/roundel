@@ -8,12 +8,12 @@ init:
 build:
 	yarn build
 
-dist: build
-	../_tools/build.py dist --additional assets --additional static
+dist:   build
+#	../_tools/build.py dist --additional assets --additional static
 
 fastbuild: clean
 	yarn fastbuild
-	../_tools/build.py dist --additional assets --additional static
+#	../_tools/build.py dist --additional assets --additional static
 
 clean:
 	@$(RM) -r dist

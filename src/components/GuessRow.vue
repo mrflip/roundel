@@ -1,7 +1,7 @@
 <template>
   <div class="guess-row flex flex-row py-1 px-2 sm:text-xl items-center" :class="rowClasses">
     <span class="w-5 text-right">{{ guess.score }}</span>
-    <span class="ml-1.5 w-full">{{ guess.word }}</span>
+    <span class="ml-1.5 w-full">{{ text }}</span>
     <span v-if="removable" @click="delGuess" class="h-5 w-5 text-gray-400"><x-circle-icon /></span>
   </div>
 </template>
@@ -17,11 +17,16 @@ export default defineComponent({
   props: {
     guess: { type: Object, required: true },
     removable: { type: Boolean, default: true },
+    reveal:    { type: Number,  default: 1 },
   },
   computed: {
     rowClasses() {
       return this.guess.flavor
-    }
+    },
+    text() {
+      // if (! this.masked) { return this.guess.word }
+      return this.guess.revealed(this.reveal)
+    },
   },
   methods: {
     delGuess() {

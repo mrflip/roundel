@@ -22,3 +22,4 @@ lexy-bee
 lexy-sls
 
 data/
+orig/*.json

@@ -6,7 +6,7 @@ import Roundels from '@/views/Roundels.vue';
 import Guesser  from '@/views/Guesser.vue';
 
 console.log(createWebHistory === createWebHashHistory)
-const BASE_ROUTE = '/r/'
+const BASE_ROUTE = '/'
 
 const routes: RouteRecordRaw[] = [
   {

@@ -1,4 +1,5 @@
 import _           /**/ from 'lodash'
+import moment           from 'moment'
 import { sprintf }      from 'sprintf-js'
 import Guess            from './Guess.js'
 import { Dicts }        from './Dicts.js'
@@ -24,7 +25,7 @@ export class Roundel implements TY.Roundel {
   constructor(ltrs: string, obj: Partial<Roundel> = {}) {
     this.letters     = Roundel.normalize(ltrs)
     this.datestr     = (obj.datestr   || Roundel.getDatestr())
-    this.updatedAt   = (obj.updatedAt || '')
+    this.updatedAt   = (obj.updatedAt || moment().format('YYYYMMDD'))
     //
     this.mainLetter  = this.letters[0]  //eslint-disable-line
     this.pangRe   = Roundel.makePangRe(this.letters)
@@ -190,7 +191,9 @@ export class Roundel implements TY.Roundel {
     return _(gooduns)
       .groupBy('len')
       .map((gs, len) => ({
-        title: `${len}s (${gs.length}/${full_nums[len]} | ${gs.filter((gg) => gg.comn).length}/${comn_nums[len]})`,
+        key:   String(len),
+        title: `${len}s`,
+        stats: `(${gs.length}/${full_nums[len]} | ${gs.filter((gg) => gg.comn).length}/${comn_nums[len]})`,
         data: gs,
       }))
       .value()
@@ -220,14 +223,16 @@ export class Roundel implements TY.Roundel {
   summaryInfo(lex: TY.LexName) {
     const { grouped, topScore, num } = this.lexMatches(lex)
     const [count, roundelHist] = this.wordHist(lex)
+    console.log(roundelHist)
     const totHist = Object
       .entries(grouped)
     // @ts-ignore
-      .map(([len, vv]: [number, number[]]): [number, number][] => [len, vv.length])
+      .map(([len, vv]: [number, number[]]): [number, number][] => [Number(len), vv.length])
     // @ts-ignore
-      .map(([len, vct]: [number, number]) => `${len}:${roundelHist.get(len)}/${vct}`)
+      .map(([len, vct]: [number, number]) => `${len}:${roundelHist.get(len)}/${vct || '-'}`)
       .join(' ')
     const totScore = this.totScore()
+    console.log({ totScore, topScore, count, num, totHist })
     return { totScore, topScore, count, num, totHist }
   }
 
@@ -267,7 +272,7 @@ export class Roundel implements TY.Roundel {
     return _.pickBy({
       letters:          this.letters.toUpperCase(),
       datestr:          this.datestr,
-      updatedAt:        this.updatedAt,
+      updatedAt:        moment().format('YYYYMMDD'),
       gooduns:          this.gooduns.map((gg) => gg.word),
       nogos:            this.nogos.map((gg) => gg.word),
     })

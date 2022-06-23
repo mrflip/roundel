@@ -1,5 +1,11 @@
 {
+
+  "exclude": [
+    "node_modules", "built", "data",
+  ],
+
   "compilerOptions": {
+    "outDir": "./built",
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
@@ -14,9 +20,6 @@
     "types": [],
     "paths": {
       "@/*": ["src/*"],
-      "ui/*": ["../../ui/*"],
-      "lib": ["../../lib"],
-      "lib/*": ["../../lib/*"]
     },
     "baseUrl": "."
   },

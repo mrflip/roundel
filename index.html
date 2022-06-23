@@ -2,26 +2,44 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="HandheldFriendly" content="true" />
     <meta name="format-detection" content="telephone=no" />
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
     <link rel="apple-touch-icon-precomposed" href="/static/favicon-180.png" />
-    <title>@mrflip fork of @mk2's Inventory visualizer - wasmegg</title>
-    <meta
-      name="description"
-      content="The easiest way to share your entire Egg, Inc. artifact inventory"
-    />
-    <meta property="og:image" content="https://mrflipeggfork.netlify.app/banner.png" />
+    <title>Lexy Roundle by @mrflip</title>
+    <meta property="og:description" content="Words in the Round" />
+    <meta property="og:image" content="https://lexyaf.netlify.app/banner.png" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Inventory visualizer - mrflipeggfork" />
-    <meta property="og:url" content="https://mrflipeggfork.netlify.app/inventory-visualizer/" />
-    <meta
-      property="og:description"
-      content="The easiest way to share your entire Egg, Inc. artifact inventory"
-      />
+    <meta property="og:title" content="Lexy - Roundle" />
+    <meta property="og:url" content="https://lexyaf.netlify.app" />
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Egg Inventory">
+    <meta name="apple-mobile-web-app-title" content="Lexy Roundel">
+    <style>
+      * { touch-action: manipulation; }
+      input[type="button"] { touch-action: manipulation; }
+    </style>
+    <script>
+    document.addEventListener('gesturestart', function(e) {
+      e.preventDefault();
+      // special hack to prevent zoom-to-tabs gesture in safari
+      document.body.style.zoom = 0.99;
+    });
 
+    document.addEventListener('gesturechange', function(e) {
+      e.preventDefault();
+      // special hack to prevent zoom-to-tabs gesture in safari
+      document.body.style.zoom = 0.99;
+    });
+
+    document.addEventListener('gestureend', function(e) {
+      e.preventDefault();
+      // special hack to prevent zoom-to-tabs gesture in safari
+      document.body.style.zoom = 0.99;
+    });
+    </script>
   </head>
   <body>
     <div id="app" class="flex flex-col flex-1">

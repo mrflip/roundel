@@ -1,24 +1,27 @@
 #!/usr/bin/env yarn node --experimental-specifier-resolution=node
 import _                           /**/ from 'lodash'
 import fs                               from 'fs'
-import JSSoup                           from 'jssoup'
+import JSSoupLib                        from 'jssoup'
 import glob                             from 'glob'
 import moment                           from 'moment'
 //
-import Bee                              from '../built/lib/Roundel'
+import Roundel                              from '../built/src/lib/Roundel'
+import ArchDict                         from '../data/dict_arch.json' assert { type: 'json' }
 
 // --- Setup
 // ( cd /data/ripd; wget -r -l100000 --no-clobber -nv https://nytbee.com/Bee_`date +"%Y%m%d"`.html && cd ~- && ./scripts/parse_nytbee.js )
-const data_dir = '/data/ripd/nytbee.com'
+const data_dir = '/Users/Shared/data/ripd/nytbee.com'
+
+const JSSoup = JSSoupLib.default
 
 // --- Parse
-const AllWords = new Set()
+const AllWords = new Set(ArchDict)
 const AllObs   = new Set()
-const AllBees  = []
+const AllRoundels  = []
 
 const VOWELS   = new Set('a', 'e', 'i', 'o', 'u')
 
-let latestBee = 20080800
+let latestRoundel = 20080800
 
 // For all of the files we downloaded,
 glob(`${data_dir}/Bee*.html`, (err, files) => {
@@ -68,7 +71,7 @@ glob(`${data_dir}/Bee*.html`, (err, files) => {
     // Grab the date from the filename
     words.datestr = filename.replace(/.*Bee_/, '').replace(/\.html/, '')
 
-    if (Number(words.datestr) > latestBee) { latestBee = words.datestr }
+    if (Number(words.datestr) > latestRoundel) { latestRoundel = words.datestr }
 
     // The page is now parsed; rest of this is turning it into the object we want
 
@@ -93,11 +96,11 @@ glob(`${data_dir}/Bee*.html`, (err, files) => {
       .map(([ll, _x]) => ll)
       .join('')
 
-    words.letters = Bee.normalize(sorted_letters)
+    words.letters = Roundel.normalize(sorted_letters)
 
     console.log('Parsed', filename, words.letters, words.wds.length, words.obs.length)
 
-    AllBees.push(words)
+    AllRoundels.push(words)
   })
 
   // Make the whole dictionary into the shapes we want
@@ -106,22 +109,22 @@ glob(`${data_dir}/Bee*.html`, (err, files) => {
   const all_obs = Array.from(AllObs.values()).sort()
   // console.log(all_wds)
 
-  const all_ltrs = AllBees.map((bb) => [bb.letters.toUpperCase(), bb.datestr])
+  const all_ltrs = AllRoundels.map((bb) => [bb.letters.toUpperCase(), bb.datestr])
   all_ltrs.sort(([_wa, da], [_wb, db]) => (da < db ? 1 : -1))
 
   const stats = {
     wordsUpdated:       moment().format('YYYYMMDD'),
-    latestBee,
+    latestRoundel,
     wordsCount:         all_wds.length,
-    nytBeesCount:       all_ltrs.length,
+    comnRoundelsCount:       all_ltrs.length,
   }
 
   // Write to disk
 
-  fs.writeFileSync('./data/dict_nyt.json',  JSON.stringify(all_wds),  { encoding: 'utf8' })
-  fs.writeFileSync('./data/dict_obs.json',  JSON.stringify(all_obs),  { encoding: 'utf8' })
-  fs.writeFileSync('./data/bees.json',      JSON.stringify(all_ltrs), { encoding: 'utf8' })
-  fs.writeFileSync('./data/nyt_stats.json', JSON.stringify(stats),    { encoding: 'utf8' })
+  fs.writeFileSync('./data/dict_comn.json',  JSON.stringify(all_wds,  0, 2) + '\n', { encoding: 'utf8' })
+  fs.writeFileSync('./data/dict_obs.json',   JSON.stringify(all_obs,  0, 2) + '\n', { encoding: 'utf8' })
+  fs.writeFileSync('./data/roundels.json',   JSON.stringify(all_ltrs, 0, 2) + '\n', { encoding: 'utf8' })
+  fs.writeFileSync('./data/comn_stats.json', JSON.stringify(stats,    0, 2) + '\n', { encoding: 'utf8' })
 
   // Report on success
 

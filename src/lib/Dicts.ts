@@ -1,7 +1,7 @@
 import _                                from 'lodash'
-import FullWords                         from '../../data/dict_full.json'
-import ComnWords                        from '../../data/dict_comn.json'
-import ObscWords                        from '../../data/dict_obsc.json'
+import FullWords                        from '../../data/dict_full.json' // assert { type: 'json' }
+import ComnWords                        from '../../data/dict_comn.json' // assert { type: 'json' }
+import ObscWords                        from '../../data/dict_obsc.json' // assert { type: 'json' }
 import * as TY                          from './types.js'
 
 const Dicts = {

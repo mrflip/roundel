@@ -27,8 +27,8 @@
     <div class="button-keys flex mt-2 md:px-4 m-auto items-center justify-between align-middle text-center ">
       <template v-for="[letter, idxCC] of indexedLtrs" :key="letter">
         <button
-          @click="() => insertLetter(letter)"
-          class="w-full mx-1.5 sm:mx-2 md:mx-3 max-w-24 text-3xl xs:text-4xl sm:text-5xl h-14 sm:h-20  border-transparent rounded-md shadow-sm text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
+          @click="() => insertLetter(String(letter))"
+          class="w-full mx-1.5 sm:mx-2 md:mx-3 max-w-24 text-2xl xs:text-4xl sm:text-5xl h-12 xs:h-16 sm:h-[4.5rem] md:h-20 border-transparent rounded-md shadow-sm text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
           :class="`ltr ltr${idxCC}`"
         >
           {{ letter }}
@@ -36,6 +36,10 @@
       </template>
     </div>
 
+    <div class="flex flex-col text-xs md:text-lg md:mt-2">
+      <div class="flex flex-row"><span class="w-10 md:w-14">comm&nbsp;</span><span>{{ roundel.summary('comn') }}</span></div>
+      <div class="flex flex-row"><span class="w-10 md:w-14">full&nbsp;</span><span>{{ roundel.summary('full') }}</span></div>
+    </div>
   </div>
 
 </template>
@@ -54,7 +58,7 @@ export default defineComponent({
   props: {
     roundel:    { type: Object as PropType<TY.Roundel>,  required: true },
   },
-  emits: ['addGuess'],
+  emits: ['addGuess', 'delGuess'],
   //
   data() {
     const word = ''
@@ -63,17 +67,20 @@ export default defineComponent({
     }
   },
   computed: {
-    indexedLtrs() { return this.roundel.upltrs.map((ltr, idx) => [ltr, idx]) },
+    indexedLtrs() { return this.roundel.upltrs.map((ltr: string, idx: number) => [ltr, idx]) },
   },
 
   mounted() {
-    this.$refs.word.focus()
+    // @ts-ignore
+    // this.$refs.word.focus()
   },
 
   methods: {
     setWord(word: string) {
+      // @ts-ignore
       const normed = this.roundel.normEntry(word)
       this.word = normed
+      // @ts-ignore
       this.$refs.word.value = normed
     },
     insertLetter(letter: string) {
@@ -82,7 +89,7 @@ export default defineComponent({
     },
     delLetter() {
       console.log('delLetter')
-      this.word = this.word.slice(0, -1)
+      this.setWord(this.word.slice(0, -1))
     },
     clearWord() {
       this.setWord('')

@@ -11,6 +11,7 @@ export interface Roundel {
   nogos:        Guess[]
   hints:        Guess[]
   dispLtrs:     string
+  upltrs:       string[]
 
   _lexMatches: { [letters: string]: any }
   _allWords:    string[]
@@ -19,6 +20,9 @@ export interface Roundel {
   isPang(word: string): boolean
   lexMatches(lex: LexName): LexMatches
   serialize(): Partial<Roundel>
+  summary(lex: LexName): string
+
+  // static normEntry(word: string): string
 }
 
 export interface Guess {

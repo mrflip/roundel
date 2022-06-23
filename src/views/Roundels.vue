@@ -1,32 +1,36 @@
 <template>
-  <h1 class="mx-4 mt-4 mb-2 text-center text-lg leading-6 font-medium text-gray-900">
-    Lexy Roundel
-  </h1>
+  <div class="flex w-5xl relative">
+    <div class="flex flex-row px-2 pt-3 pb-2 justify-center absolute inset-x-0 top-0 bg-gray-100/75 backdrop-blur-sm z-50">
+      <h1 class="text-center text-xl xs:text-2xl sm:text-3xl leading-6 font-medium text-gray-900">
+        Lexy Roundel
+      </h1>
+    </div>
+  </div>
 
-
-  <template v-for="roundelDNA of roundelDNAs" :key="roundelDNA.letters">
-    <roundel-row @click="() => navToGuesser(roundelDNA)" >roundelDNA</roundel-row>
-  </template>
-
+  <div class="flex flex-row w-full relative h-screen">
+    <div class="flex flex-col absolute px-1 pt-20 pb-80 overflow-y-auto h-[100%]">
+      <template v-for="roundel of roundels" :key="roundel.letters">
+        <roundel-row @click="() => navToGuesser(roundel)" :roundel="roundel" />
+      </template>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import _                           /**/ from 'lodash'
 import { defineComponent, PropType } from 'vue'
 import { onBeforeRouteUpdate, useRouter, RouteLocationNormalized } from 'vue-router'
-
-import RoundelRow           from '@/components/RoundelRow.vue'
-
 //
+import * as TY                          from '@/lib/types'
+import * as Lib                         from '@/lib'
+import roundelDnas                      from '../../data/roundels.json'
+import RoundelRow                       from '@/components/RoundelRow.vue'
+//
+const { Guess, Roundel, storeRoundel, loadRoundel } = Lib
 
 interface GuesserParams {
   playerID:     string
   letters:      string
-}
-
-interface Roundel {
-  letters:      string
-  words:        string[]
 }
 
 export default defineComponent({
@@ -48,6 +52,7 @@ export default defineComponent({
       // playerID,
       search,
       // params:           this.$route.params,
+      roundelDnas: roundelDnas,
     }
     console.log(this.playerID, data)
     return data
@@ -58,13 +63,14 @@ export default defineComponent({
   },
 
   computed: {
-    roundelDNAs() {
-      return [
-        { letters: 'EIANRTD' },
-        { letters: 'AIDGNPR' },
-        { letters: 'AIOUFNT' },
-      ]
-    },
+    roundels() {
+      const roundels = _.map(this.roundelDnas, ([letters, datestr]) => {
+        const raw = loadRoundel({ letters, datestr })
+        return raw.stored ? Roundel.from(raw) : raw
+      })
+      console.log(roundels.slice(0, 30))
+      return roundels
+    }
   },
 
   async mounted() {
@@ -82,7 +88,6 @@ export default defineComponent({
       if (! letters) { return }
       // @ts-ignore
       this.$router.push({ name: 'guesser', params: this.completeParams({ letters }) })
-
     },
     /* submitPlayerID(id: string) {
      *   this.playerID = id
