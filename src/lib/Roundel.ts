@@ -6,14 +6,14 @@ import * as TY          from './types.js'
 
 const VOWELS = new Set(['a', 'e', 'i', 'o', 'u'])
 
-class Roundel implements TY.Roundel {
+export class Roundel implements TY.Roundel {
   letters:      string
   datestr:      string
   updatedAt:    string
   mainLetter:   string
-  pangramRe:     RegExp
+  pangRe:       RegExp
   rejectRe:     RegExp
-  guesses:      TY.Guess[]
+  gooduns:      TY.Guess[]
   nogos:        TY.Guess[]
   hints:        Guess[]
   dispLtrs:     string
@@ -27,13 +27,13 @@ class Roundel implements TY.Roundel {
     this.updatedAt   = (obj.updatedAt || '')
     //
     this.mainLetter  = this.letters[0]  //eslint-disable-line
-    this.pangramRe   = Roundel.makePangramRe(this.letters)
+    this.pangRe   = Roundel.makePangRe(this.letters)
     this.rejectRe    = Roundel.makeRejectRe(this.letters)
     //
     // @ts-ignore
-    this.guesses = (obj.guesses)
+    this.gooduns = (obj.gooduns)
     // @ts-ignore
-      ? obj.guesses.map((gg: any) => new Guess(gg, this))
+      ? obj.gooduns.map((gg: any) => new Guess(gg, this))
       : []
     // @ts-ignore
     this.nogos   = (obj.nogos)
@@ -45,8 +45,8 @@ class Roundel implements TY.Roundel {
     this.dispLtrs    = Roundel.dispLtrs(this.letters)
   }
 
-  resetGuesses() {
-    this.guesses = []
+  resetGooduns() {
+    this.gooduns = []
     this.nogos   = []
     this.hints   = this.getHints()
   }
@@ -78,20 +78,28 @@ class Roundel implements TY.Roundel {
     return this.letters.split('')
   }
 
-  isPan(word: string): boolean {
-    return this.pangramRe.test(word)
+  get upltrs(): string[] {
+    return this.larry.map((ltr) => ltr.toUpperCase())
+  }
+
+  get dashedLetters(): string {
+    return `${this.letters.slice(0, 1)} / ${this.letters.slice(1)}`.toUpperCase()
+  }
+
+  isPang(word: string): boolean {
+    return this.pangRe.test(word)
   }
 
   totScore(): number {
-    return this.guesses.reduce((tot, guess) => (tot + guess.score), 0)
+    return this.gooduns.reduce((tot, guess) => (tot + guess.score), 0)
   }
 
-  panScore(wd: string): number {
-    return (wd.length + (this.isPan(wd) ? 7 : 0))
+  pangScore(wd: string): number {
+    return (wd.length + (this.isPang(wd) ? 7 : 0))
   }
 
   hasWord(word: string): boolean {
-    return this.guesses.some((guess)  => (guess.word === word))
+    return this.gooduns.some((guess)  => (guess.word === word))
       || this.nogos.some((guess) => (guess.word === word))
   }
 
@@ -99,7 +107,7 @@ class Roundel implements TY.Roundel {
     return wd.includes(this.mainLetter)
   }
 
-  static makePangramRe(letters: string): RegExp {
+  static makePangRe(letters: string): RegExp {
     return new RegExp(letters.split('').map((ltr) => `(?=.*${ltr})`).join(''), 'i')
   }
 
@@ -116,6 +124,7 @@ class Roundel implements TY.Roundel {
       .allWords
       .filter((wd) => (wd.length >= 4))
       .filter((wd) => (! this.hasWord(wd)))
+      // @ts-ignore
       .map((wd) => new Guess(wd.toLowerCase(), this))
     )
     return this.hints
@@ -123,10 +132,10 @@ class Roundel implements TY.Roundel {
 
   get allWords() {
     if (! this._allWords) {
-      const nyt      = this.lexMatches('nyt')
-      const scr      = this.lexMatches('scr')
+      const comn      = this.lexMatches('comn')
+      const full      = this.lexMatches('full')
       this._allWords = _.sortedUniq(
-        _.sortBy(scr.words.concat(nyt.words), ['length', _.identity]),
+        _.sortBy(full.words.concat(comn.words), ['length', _.identity]),
       )
     }
     return this._allWords
@@ -143,16 +152,16 @@ class Roundel implements TY.Roundel {
       // @ts-ignore
       this.nogos.sort(Roundel.byAlpha)
     } else {
-      this.guesses   = this.guesses.concat([guess])
+      this.gooduns   = this.gooduns.concat([guess])
       this.hints     = this.hints.filter((hh) => hh.word !== wd)
       // @ts-ignore
-      this.guesses.sort(Roundel.byAlpha)
+      this.gooduns.sort(Roundel.byAlpha)
     }
     return guess
   }
 
   delGuess(wd: string) {
-    this.guesses   = this.guesses.filter((guess) => guess.word !== wd)
+    this.gooduns   = this.gooduns.filter((guess) => guess.word !== wd)
     this.nogos     = this.nogos.filter((guess)   => guess.word !== wd)
     this.hints     = this.getHints()
   }
@@ -165,9 +174,9 @@ class Roundel implements TY.Roundel {
     return (aa.score < bb.score ? -1 : Roundel.byAlpha(aa, bb))
   }
 
-  guessesByLen() {
+  goodunsByLen() {
     // @ts-ignore
-    return Roundel.sectionListify(this.guesses, this)
+    return Roundel.sectionListify(this.gooduns, this)
   }
 
   hintsByLen() {
@@ -175,13 +184,13 @@ class Roundel implements TY.Roundel {
     return Roundel.sectionListify(this.hints, this)
   }
 
-  static sectionListify(guesses: TY.Guess[], roundel: TY.Roundel) {
-    const { nums:nyt_nums } = roundel.lexMatches('nyt') // don't do this (passing in the obj)
-    const { nums:scr_nums } = roundel.lexMatches('scr')
-    return _(guesses)
+  static sectionListify(gooduns: TY.Guess[], roundel: TY.Roundel) {
+    const { nums:comn_nums } = roundel.lexMatches('comn') // don't do this (passing in the obj)
+    const { nums:full_nums } = roundel.lexMatches('full')
+    return _(gooduns)
       .groupBy('len')
       .map((gs, len) => ({
-        title: `${len}s (${gs.length}/${scr_nums[len]} | ${gs.filter((gg) => gg.nyt).length}/${nyt_nums[len]})`,
+        title: `${len}s (${gs.length}/${full_nums[len]} | ${gs.filter((gg) => gg.comn).length}/${comn_nums[len]})`,
         data: gs,
       }))
       .value()
@@ -190,7 +199,7 @@ class Roundel implements TY.Roundel {
   // Try to guess the coordinates of the guess, so we can scroll to it.
   // This only kinda works and would need much more fiddling to get right.
   sectionForGuess(guess: TY.Guess) {
-    const gBS          = this.guessesByLen()
+    const gBS          = this.goodunsByLen()
     const lens         = gBS.map((ll) => (ll.data[0].len))
     const sectionIndex = _.findIndex(lens, (len) => (len === guess.len))
     if (sectionIndex < 0) return null
@@ -202,6 +211,7 @@ class Roundel implements TY.Roundel {
 
   lexMatches(lex: TY.LexName) {
     if (! this._lexMatches[lex]) {
+      // @ts-ignore
       this._lexMatches[lex] = Dicts.lexMatches(lex, this)
     }
     return this._lexMatches[lex]
@@ -229,13 +239,13 @@ class Roundel implements TY.Roundel {
     return `${totScore}/${topScore} (${count}/${num}): ${totHist}`
   }
 
-  get pangramGuesses() {
-    return _.filter(this.guesses, ({ isPan }) => isPan)
+  get pangGooduns() {
+    return _.filter(this.gooduns, 'isPang')
   }
 
   sundaySummary() {
-    const sunCount = _.filter(this.guesses, ({ len }) => (len >= 5)).length
-    const bingoCount = _.size(this.pangramGuesses)
+    const sunCount = _.filter(this.gooduns, ({ len }) => (len >= 5)).length
+    const bingoCount = _.size(this.pangGooduns)
     const sunTot = sunCount + 2 * bingoCount
     return `${sunCount}+2*${bingoCount}=${sunTot}`
   }
@@ -244,7 +254,7 @@ class Roundel implements TY.Roundel {
     const hist  = new Map<number, number>()
     let   count = 0
     _.range(0, 15).forEach((nn) => (hist.set(nn, 0))) // eslint-disable-line
-    this.guesses.forEach((guess) => {
+    this.gooduns.forEach((guess) => {
       if (guess[lex]) {
         count += 1
         hist.set(guess.len, 1 + (hist.get(guess.len) || 0))
@@ -258,26 +268,26 @@ class Roundel implements TY.Roundel {
       letters:          this.letters.toUpperCase(),
       datestr:          this.datestr,
       updatedAt:        this.updatedAt,
-      guesses:          this.guesses.map((gg) => gg.word),
+      gooduns:          this.gooduns.map((gg) => gg.word),
       nogos:            this.nogos.map((gg) => gg.word),
     })
   }
 
   serializeWithSummary() {
-    const nytSummary = this.summaryInfo('nyt')
-    const scrSummary = this.summaryInfo('scr')
-    const { totScore:nytScore, topScore:nytMax } = nytSummary
+    const comnSummary = this.summaryInfo('comn')
+    const fullSummary = this.summaryInfo('full')
+    const { totScore:comnScore, topScore:comnMax } = comnSummary
     return {
       ...this.serialize(),
-      nytScore,
-      nytMax,
-      nytFrac:          (Math.round(100 * (nytScore / nytMax)) || 0),
-      nytSummary:       JSON.stringify(nytSummary),
-      scrSummary:       JSON.stringify(scrSummary),
+      comnScore,
+      comnMax,
+      comnFrac:          (Math.round(100 * (comnScore / comnMax)) || 0),
+      comnSummary:       JSON.stringify(comnSummary),
+      fullSummary:       JSON.stringify(fullSummary),
     }
   }
 
-  static from(obj: Partial<Roundel>) {
+  static from(obj: Partial<Roundel>): Roundel {
     return new Roundel(obj.letters!, obj)
   }
 

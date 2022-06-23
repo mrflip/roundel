@@ -1,19 +1,19 @@
 import _                                from 'lodash'
-import ScrabbleWords                    from '../../data/wl_us.json'
-import NytWords                         from '../../data/dict_nyt.json'
-import ObsWords                         from '../../data/dict_obs.json'
+import FullWords                         from '../../data/dict_full.json'
+import ComnWords                        from '../../data/dict_comn.json'
+import ObscWords                        from '../../data/dict_obsc.json'
 import * as TY                          from './types.js'
 
 const Dicts = {
-  scr:          new Set<string>(ScrabbleWords),
-  nyt:          new Set<string>(NytWords),
-  obs:          new Set<string>(ObsWords),
-  scr_wds:      ScrabbleWords,
-  nyt_wds:      NytWords,
+  full:          new Set<string>(FullWords),
+  comn:          new Set<string>(ComnWords),
+  obsc:          new Set<string>(ObscWords),
+  full_wds:      FullWords,
+  comn_wds:      ComnWords,
   //
-  isScr:        (wd: string) => (Dicts.scr.has(wd)),
-  isNyt:        (wd: string) => (Dicts.nyt.has(wd)),
-  isValid:      (wd: string) => ((Dicts.isNyt(wd) || Dicts.isScr(wd))),
+  isFull:       (wd: string) => (Dicts.full.has(wd)),
+  isComn:       (wd: string) => (Dicts.comn.has(wd)),
+  isValid:      (wd: string) => ((Dicts.isComn(wd) || Dicts.isFull(wd))),
 
 
   lexMatches(lex: string, roundel: TY.Roundel): TY.LexMatches {
@@ -27,7 +27,7 @@ const Dicts = {
         return tot
       } else if (wd.length === 4) {
         return tot + 1
-      } else if (roundel.pangramRe.test(wd)) {
+      } else if (roundel.pangRe.test(wd)) {
         return tot + wd.length + 7
       } else {
         return tot + wd.length
@@ -42,8 +42,8 @@ const Dicts = {
 
 // export default Dicts
 export {
-  ScrabbleWords,
-  NytWords,
-  ObsWords,
+  FullWords,
+  ComnWords,
+  ObscWords,
   Dicts,
 }

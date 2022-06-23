@@ -1,6 +1,4 @@
 import _                           /**/ from 'lodash'
-//
-
-export function hi() {
-  return 'hi'
-}
+export *                                from './Roundel'
+export *                                from './Guess'
+export *                                from './storage'

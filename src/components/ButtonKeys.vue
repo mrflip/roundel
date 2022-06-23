@@ -1,45 +1,29 @@
 <template>
-  <div class="button-keys flex m-auto items-center justify-center border border-transparent rounded-md shadow-sm text-sm font-medium bg-blue-100">
+  <div class="button-keys flex my-2 md:px-4 m-auto items-center justify-between align-middle text-center ">
 
-    <template v-for="[letter, idxCC] of lettersList" :key="letter">
+    <template v-for="[letter, idxCC] of letters.map((ltr, idx) => [ltr, idx])" :key="letter">
       <button
         @click="() => $emit('insertLetter', letter)"
-        :class="`ltr my-1 mx-2 w-10 py-2 px-2 h-10 flex m-auto items-center justify-center border border-transparent rounded-md shadow-sm text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 ${idxCC}`"
+        class="w-full mx-1.5 sm:mx-2 md:mx-3 text-3xl xs:text-4xl sm:text-5xl max-w-24 md:text-6xl h-14 sm:h-20 md:h-24 border-transparent rounded-md shadow-sm text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
+        :class="`ltr ltr${idxCC}`"
       >
         {{ letter }}
       </button>
     </template>
-
-    <button
-      @click="() => $emit('delLetter')"
-      class="bksp my-1 mx-2 w-10 py-2 px-2 h-10 flex m-auto items-center justify-center border border-transparent rounded-md shadow-sm text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
-    >
-      &lt;-
-    </button>
 
   </div>
 </template>
 
 <script lang="ts">
 import _                           /**/ from 'lodash'
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType }    from 'vue'
 //
 export default defineComponent({
   name: "ButtonKeys",
-
   props: {
-    letters:   { type: String as PropType<string>,     required: true },
+    letters:   { type: Array as PropType<string[]>,     required: true },
   },
-  emits: ['insertLetter', 'delLetter'],
-  //
-  data() {
-    const lettersList: [string, string][] = _.map(this.letters.split(''), (ltr, idx) => [ltr, `ltr${idx}`])
-    return {
-      lettersList,
-    }
-  },
-  methods: {
-  },
+  emits: ['insertLetter'],
 })
 </script>
 

@@ -1,13 +1,13 @@
-export type LexName = 'nyt' | 'scr'
+export type LexName = 'comn' | 'full'
 
 export interface Roundel {
   letters:      string
   datestr:      string
   updatedAt:    string
   mainLetter:   string
-  pangramRe:     RegExp
+  pangRe:       RegExp
   rejectRe:     RegExp
-  guesses:      Guess[]
+  gooduns:      Guess[]
   nogos:        Guess[]
   hints:        Guess[]
   dispLtrs:     string
@@ -16,21 +16,21 @@ export interface Roundel {
   _allWords:    string[]
 
   hasMain(str: string): boolean
-  isPan(word: string): boolean
+  isPang(word: string): boolean
   lexMatches(lex: LexName): LexMatches
+  serialize(): Partial<Roundel>
 }
 
 export interface Guess {
   word:     string
   len:      number
   score:    number
-  isPan:    boolean
-  scr:      boolean
-  nyt:      boolean
+  pang:     boolean
+  full:     boolean
+  comn:     boolean
   valid:    boolean
   hasMain:  boolean
   nogo:     boolean
-  color:    string
 
   revealed(num: number): string
 
@@ -45,3 +45,5 @@ export interface LexMatches {
   nums:     { [key: string]: number }
   num:      number
 }
+
+export type GuessFlavor = 'bogon' | 'nomain' | 'shorty' | 'pang' | 'comn' | 'obsc'
