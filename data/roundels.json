@@ -1,4 +1,114 @@
 {
+  "BAOUNTY": {
+    "ll": "baounty",
+    "dt": "20220703",
+    "ol": true,
+    "cpx": 203,
+    "cw": 0,
+    "cwx": 47,
+    "fpx": 325,
+    "fw": 0,
+    "fwx": 79
+  },
+  "PAIOCLT": {
+    "ll": "paioclt",
+    "dt": "20220702",
+    "ol": true,
+    "cpx": 354,
+    "cw": 0,
+    "cwx": 69,
+    "fpx": 612,
+    "fw": 0,
+    "fwx": 119
+  },
+  "GEIUNQT": {
+    "ll": "geiunqt",
+    "dt": "20220701",
+    "ol": true,
+    "cpx": 248,
+    "cw": 0,
+    "cwx": 37,
+    "fpx": 434,
+    "fw": 0,
+    "fwx": 68
+  },
+  "VAEIBLN": {
+    "ll": "vaeibln",
+    "dt": "20220630",
+    "ol": true,
+    "cpx": 218,
+    "cw": 0,
+    "cwx": 48,
+    "fpx": 420,
+    "fw": 0,
+    "fwx": 89
+  },
+  "FAICLTY": {
+    "ll": "faiclty",
+    "dt": "20220629",
+    "ol": true,
+    "cpx": 164,
+    "cw": 0,
+    "cwx": 35,
+    "fpx": 249,
+    "fw": 0,
+    "fwx": 55
+  },
+  "WAIDLNT": {
+    "ll": "waidlnt",
+    "dt": "20220628",
+    "ol": true,
+    "cpx": 69,
+    "cw": 0,
+    "cwx": 22,
+    "fpx": 111,
+    "fw": 0,
+    "fwx": 34
+  },
+  "UIOCDNT": {
+    "ll": "uiocdnt",
+    "dt": "20220627",
+    "ol": true,
+    "cpx": 161,
+    "cw": 0,
+    "cwx": 29,
+    "fpx": 295,
+    "fw": 0,
+    "fwx": 50
+  },
+  "BAIUGLN": {
+    "ll": "baiugln",
+    "dt": "20220626",
+    "ol": true,
+    "cpx": 282,
+    "cw": 0,
+    "cwx": 50,
+    "fpx": 542,
+    "fw": 0,
+    "fwx": 98
+  },
+  "UOFGHLT": {
+    "ll": "uofghlt",
+    "dt": "20220625",
+    "ol": true,
+    "cpx": 124,
+    "cw": 0,
+    "cwx": 35,
+    "fpx": 161,
+    "fw": 0,
+    "fwx": 44
+  },
+  "MAENPTV": {
+    "ll": "maenptv",
+    "dt": "20220624",
+    "ol": true,
+    "cpx": 165,
+    "cw": 0,
+    "cwx": 40,
+    "fpx": 314,
+    "fw": 0,
+    "fwx": 69
+  },
   "UAEDFLT": {
     "ll": "uaedflt",
     "dt": "20220623",
@@ -12,7 +122,6 @@
   },
   "EIOBLMZ": {
     "ll": "eioblmz",
-    "up": "20220621",
     "dt": "20220622",
     "ol": true,
     "cpx": 163,
@@ -24,7 +133,6 @@
   },
   "BEIODGT": {
     "ll": "beiodgt",
-    "up": "20220621",
     "dt": "20220621",
     "ol": true,
     "cpx": 184,
@@ -36,7 +144,6 @@
   },
   "NECLTXY": {
     "ll": "necltxy",
-    "up": "20220623",
     "dt": "20220620",
     "ol": true,
     "cpx": 111,
@@ -48,7 +155,6 @@
   },
   "CAEIGMN": {
     "ll": "caeigmn",
-    "up": "20220628",
     "dt": "20220619",
     "ol": true,
     "cpx": 228,
@@ -11553,6 +11659,17 @@
     "fw": 0,
     "fwx": 61
   },
+  "NAIDLTW": {
+    "ll": "naidltw",
+    "dt": "20190712",
+    "ol": true,
+    "cpx": 138,
+    "cw": 0,
+    "cwx": 37,
+    "fpx": 307,
+    "fw": 0,
+    "fwx": 75
+  },
   "RAIHLTY": {
     "ll": "raihlty",
     "dt": "20190711",
@@ -12839,6 +12956,17 @@
     "fpx": 169,
     "fw": 0,
     "fwx": 45
+  },
+  "LAICFTY": {
+    "ll": "laicfty",
+    "dt": "20180927",
+    "ol": true,
+    "cpx": 349,
+    "cw": 0,
+    "cwx": 71,
+    "fpx": 598,
+    "fw": 0,
+    "fwx": 118
   },
   "EOLNPTY": {
     "ll": "eolnpty",
@@ -14842,17 +14970,6 @@
     "fw": 0,
     "fwx": 111
   },
-  "LAICFTY": {
-    "ll": "laicfty",
-    "dt": "20180927",
-    "ol": false,
-    "cpx": 349,
-    "cw": 0,
-    "cwx": 71,
-    "fpx": 598,
-    "fw": 0,
-    "fwx": 118
-  },
   "LAICNPR": {
     "ll": "laicnpr",
     "dt": "20190621",
@@ -14912,9 +15029,9 @@
     "ll": "laiubny",
     "dt": "20201108",
     "ol": false,
-    "cpx": 152,
+    "cpx": 160,
     "cw": 0,
-    "cwx": 43,
+    "cwx": 44,
     "fpx": 389,
     "fw": 0,
     "fwx": 96
@@ -15358,17 +15475,6 @@
     "fpx": 459,
     "fw": 0,
     "fwx": 95
-  },
-  "NAIDLTW": {
-    "ll": "naidltw",
-    "dt": "20190712",
-    "ol": false,
-    "cpx": 138,
-    "cw": 0,
-    "cwx": 37,
-    "fpx": 307,
-    "fw": 0,
-    "fwx": 75
   },
   "NAIOUTZ": {
     "ll": "naioutz",
@@ -16700,17 +16806,6 @@
     "fpx": 230,
     "fw": 0,
     "fwx": 52
-  },
-  "VAEIBLN": {
-    "ll": "vaeibln",
-    "dt": "20210124",
-    "ol": false,
-    "cpx": 156,
-    "cw": 0,
-    "cwx": 41,
-    "fpx": 420,
-    "fw": 0,
-    "fwx": 89
   },
   "VAEICHR": {
     "ll": "vaeichr",

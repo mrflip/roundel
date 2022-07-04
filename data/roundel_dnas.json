@@ -1,4 +1,54 @@
 {
+  "BAOUNTY": {
+    "letters": "BAOUNTY",
+    "datestr": "20220703",
+    "ol": true
+  },
+  "PAIOCLT": {
+    "letters": "PAIOCLT",
+    "datestr": "20220702",
+    "ol": true
+  },
+  "GEIUNQT": {
+    "letters": "GEIUNQT",
+    "datestr": "20220701",
+    "ol": true
+  },
+  "VAEIBLN": {
+    "letters": "VAEIBLN",
+    "datestr": "20220630",
+    "ol": true
+  },
+  "FAICLTY": {
+    "letters": "FAICLTY",
+    "datestr": "20220629",
+    "ol": true
+  },
+  "WAIDLNT": {
+    "letters": "WAIDLNT",
+    "datestr": "20220628",
+    "ol": true
+  },
+  "UIOCDNT": {
+    "letters": "UIOCDNT",
+    "datestr": "20220627",
+    "ol": true
+  },
+  "BAIUGLN": {
+    "letters": "BAIUGLN",
+    "datestr": "20220626",
+    "ol": true
+  },
+  "UOFGHLT": {
+    "letters": "UOFGHLT",
+    "datestr": "20220625",
+    "ol": true
+  },
+  "MAENPTV": {
+    "letters": "MAENPTV",
+    "datestr": "20220624",
+    "ol": true
+  },
   "UAEDFLT": {
     "letters": "UAEDFLT",
     "datestr": "20220623",
@@ -5249,6 +5299,11 @@
     "datestr": "20190713",
     "ol": true
   },
+  "NAIDLTW": {
+    "letters": "NAIDLTW",
+    "datestr": "20190712",
+    "ol": true
+  },
   "RAIHLTY": {
     "letters": "RAIHLTY",
     "datestr": "20190711",
@@ -5832,6 +5887,11 @@
   "KAOCFRT": {
     "letters": "KAOCFRT",
     "datestr": "20180930",
+    "ol": true
+  },
+  "LAICFTY": {
+    "letters": "LAICFTY",
+    "datestr": "20180927",
     "ol": true
   },
   "EOLNPTY": {
