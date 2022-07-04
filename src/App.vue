@@ -1,6 +1,6 @@
 <template>
   <main class="flex-1 w-full h-screen justify-center align-center mx-auto">
-    <div class="max-w-4xl w-full mx-auto border border-blue-300">
+    <div class="max-w-4xl w-full mx-auto">
       <router-view />
     </div>
   </main>

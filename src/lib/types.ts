@@ -23,7 +23,18 @@ export interface Roundel {
   serialize(): Partial<Roundel>
   summary(lex: LexName): string
 
-  // static normEntry(word: string): string
+  ll:           string
+  dt:           string
+  fp?:          number
+  fpx:          number
+  fw?:          number
+  fwx:          number
+  cp?:          number
+  cpx:          number
+  cw?:          number
+  cwx:          number
+  ol:           boolean
+  up?:          string
 }
 
 export interface RoundelSketch {
@@ -39,6 +50,8 @@ export interface RoundelSketch {
   cwx:          number
   ol:           boolean
   up?:          string
+  gooduns?:     string[]
+  nogos?:       string[]
 }
 
 export type RoundelsIndex = { [key: string]: RoundelSketch }
@@ -61,12 +74,26 @@ export interface Guess {
 
 }
 
+export interface RoundelPrefs {
+  sortAxis:     string
+  search:       string
+}
+
 export interface LexMatches {
   words:    string[]
   topScore: number
   grouped:  { [key: string]: string[] }
   nums:     { [key: string]: number }
   num:      number
+}
+
+export type sortAxis = 'title' |'Rtitle' |'date' |'Rdate' |'played' |'Rplayed' |'score' |'Rscore' |'points' |'Rpoints' |'words' | 'Rwords'
+
+export interface RoundelSorting {
+  icon:     string
+  dir:      "asc" | "desc"
+  by:       string | ((sk: RoundelSketch) => (number | string))
+  nextAxis: sortAxis
 }
 
 export type GuessFlavor = 'bogon' | 'nomain' | 'shorty' | 'pang' | 'comn' | 'obsc'

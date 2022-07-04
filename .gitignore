@@ -20,3 +20,4 @@ yarn.lock
 .yarn/cache
 lexy-bee
 lexy-sls
+built/

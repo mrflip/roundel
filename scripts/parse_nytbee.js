@@ -6,7 +6,7 @@ import glob                             from 'glob'
 import moment                           from 'moment'
 //
 import Roundel                          from '../built/src/lib/Roundel'
-import ArchDict                         from '../data/dict_arch.json' assert { type: 'json' }
+import ArchDict                         from '../rawd/dict_arch.json' assert { type: 'json' }
 
 // --- Setup
 // ( cd /data/ripd; wget -r -l100000 --no-clobber -nv https://nytbee.com/Bee_`date +"%Y%m%d"`.html && cd ~- && ./scripts/parse_nytbee.js )
@@ -123,10 +123,15 @@ glob(`${data_dir}/Bee*.html`, (err, files) => {
 
   // Write to disk
 
-  fs.writeFileSync('./data/dict_comn.json',    JSON.stringify(all_wds,     0, 2) + '\n', { encoding: 'utf8' })
-  fs.writeFileSync('./data/dict_obs.json',     JSON.stringify(all_obs,     0, 2) + '\n', { encoding: 'utf8' })
-  fs.writeFileSync('./data/roundel_dnas.json', JSON.stringify(allRoundels, 0, 2) + '\n', { encoding: 'utf8' })
-  fs.writeFileSync('./data/comn_stats.json',   JSON.stringify(stats,       0, 2) + '\n', { encoding: 'utf8' })
+  fs.writeFileSync('./rawd/dict_comn.json',    JSON.stringify(all_wds,     0, 2) + '\n', { encoding: 'utf8' })
+  fs.writeFileSync('./rawd/dict_obs.json',     JSON.stringify(all_obs,     0, 2) + '\n', { encoding: 'utf8' })
+  fs.writeFileSync(
+    './data/ComnWords.js',
+    'export const ComnWords = ' + JSON.stringify(all_wds,     0, 2) + '\n\nexport default ComnWords\n',
+    { encoding: 'utf8' },
+  )
+  fs.writeFileSync('./rawd/roundel_dnas.json', JSON.stringify(allRoundels, 0, 2) + '\n', { encoding: 'utf8' })
+  fs.writeFileSync('./rawd/comn_stats.json',   JSON.stringify(stats,       0, 2) + '\n', { encoding: 'utf8' })
 
   // Report on success
 

@@ -7,7 +7,7 @@ const RoundelsIndex: TY.RoundelsIndex = seedDnas
 
 const ROUNDEL_INDEX_KEY = 'roundelIndex'
 
-export function getLocalStorage(key: string): string | undefined {
+function getLocalStorage(key: string): string | undefined {
   try {
     return localStorage[key];
   } catch (err) {
@@ -16,12 +16,16 @@ export function getLocalStorage(key: string): string | undefined {
   }
 }
 
-export function setLocalStorage(key: string, val: unknown): void {
+function setLocalStorage(key: string, val: unknown): void {
   try {
     localStorage[key] = val;
   } catch (err) {
     console.error(err);
   }
+}
+
+function playerKey(playerID: string, baseKey: string) {
+  return [playerID, baseKey].join('_')
 }
 
 export function storeBag(storageKey: string, bag: object) {
@@ -42,6 +46,10 @@ export function loadBagWithFallback<T>(storageKey: string, fallback: T): T {
   return fallback
 }
 
+function mergeLoaded<T>(parsed: Partial<T>, fallback: T): T {
+  return _.pick(_.merge({}, fallback, parsed), _.keys(fallback)) as T
+}
+
 export function loadBag(storageKey: string): any | undefined {
   const rawJson  = getLocalStorage(storageKey)
   if (rawJson) {
@@ -56,10 +64,6 @@ export function loadBag(storageKey: string): any | undefined {
   return undefined
 }
 
-function mergeLoaded<T>(parsed: Partial<T>, fallback: T): T {
-  return _.pick(_.merge({}, fallback, parsed), _.keys(fallback)) as T
-}
-
 export function loadRoundels() {
   const loaded   = loadBag(ROUNDEL_INDEX_KEY) || {}
   _.merge(RoundelsIndex, loaded)
@@ -70,16 +74,25 @@ export function storeRoundels(roundelsIndex: TY.RoundelsIndex) {
   storeBag(ROUNDEL_INDEX_KEY, roundelsIndex)
 }
 
-export function storeRoundel(roundel: TY.Roundel) {
-  console.log('storeRoundel', roundel.letters, RoundelsIndex[roundel.letters.toUpperCase()], roundel.sketch)
-  storeBag(roundel.letters, roundel.serialize())
+export function loadPrefs(playerID: string) {
+  return loadBagWithFallback(playerKey(playerID, 'roundelPrefs'), { sortAxis: 'date' })
+}
+
+export function storePrefs(playerID: string, prefs: TY.RoundelPrefs) {
+  console.log('storePrefs', prefs)
+  storeBag(playerKey(playerID, 'roundelPrefs'), prefs)
+}
+
+export function storeRoundel(playerID: string, roundel: TY.Roundel) {
+  storeBag(playerKey(playerID, roundel.letters), roundel.serialize())
   RoundelsIndex[roundel.letters.toUpperCase()] = roundel.sketch
+  console.log('storeRoundel', playerID, roundel.letters, RoundelsIndex[roundel.letters.toUpperCase()], roundel.serialize())
   storeRoundels(RoundelsIndex)
 }
 
-export function loadRoundel(raw: Partial<Roundel>): Roundel {
+export function loadRoundel(playerID: string, raw: Partial<Roundel>): Roundel {
   const letters = Roundel.normalize(raw.letters!)
-  const loaded  = loadBag(letters)
+  const loaded  = loadBag(playerKey(playerID, letters))
   const bag = _.merge({}, loaded || {}, raw, { letters, stored: (!! loaded) })
   return bag as Roundel
 }

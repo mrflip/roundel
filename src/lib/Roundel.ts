@@ -254,6 +254,7 @@ export class Roundel implements TY.Roundel {
     return `${totScore}/${topScore} (${count}/${num}): ${totHist}`
   }
 
+  get ll()  { return this.letters }
   get dt()  { return this.datestr }
   get cp()  { return _.isEmpty(this.gooduns) ? undefined : this.totScore() }
   get fp()  { return _.isEmpty(this.gooduns) ? undefined : this.fullScore() }
@@ -266,8 +267,12 @@ export class Roundel implements TY.Roundel {
   get up()  { return this.updatedAt }
 
   get sketch() {
-    const { letters: ll,                   dt, ol, cp, cpx, cw, cwx, fp, fpx, fw, fwx, up } = this
+    const { letters:                   ll, dt, ol, cp, cpx, cw, cwx, fp, fpx, fw, fwx, up } = this
     const sketch: TY.RoundelSketch = { ll, dt, ol, cp, cpx, cw, cwx, fp, fpx, fw, fwx, up }
+    if (! (_.isEmpty(this.gooduns))) {
+      sketch.gooduns = this.gooduns.map((gg) => gg.word)
+      sketch.nogos   = this.nogos.map((gg) => gg.word)
+    }
     return _.omitBy(sketch, _.isNil) as TY.RoundelSketch
   }
 

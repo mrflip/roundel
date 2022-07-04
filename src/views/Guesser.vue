@@ -94,7 +94,7 @@ export default defineComponent({
 
   methods: {
     resetMaybe() {
-      if (confirm('are you sure?')) {
+      if (confirm('You\'ll have to (get to?) start all over')) {
         this.roundel.resetGooduns()
         this.hintsOn = false
         this.reveal  = 0

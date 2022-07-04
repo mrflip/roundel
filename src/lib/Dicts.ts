@@ -1,13 +1,11 @@
 import _                                from 'lodash'
-import FullWords                        from '../../data/dict_full.json' // assert { type: 'json' }
-import ComnWords                        from '../../data/dict_comn.json' // assert { type: 'json' }
-import ObscWords                        from '../../data/dict_obsc.json' // assert { type: 'json' }
+import FullWords                        from '../../data/FullWords.js'
+import ComnWords                        from '../../data/ComnWords.js'
 import * as TY                          from './types.js'
 
 const Dicts = {
   full:          new Set<string>(FullWords),
   comn:          new Set<string>(ComnWords),
-  obsc:          new Set<string>(ObscWords),
   full_wds:      FullWords,
   comn_wds:      ComnWords,
   //
@@ -45,7 +43,7 @@ const Dicts = {
   },
 
   hasMatchFor(re: RegExp, lex: TY.LexName) {
-    return Dicts[`${lex}_wds`].find((wd) => re.test(wd))
+    return (!! Dicts[`${lex}_wds`].find((wd) => re.test(wd)))
   },
 
 }
@@ -54,6 +52,5 @@ const Dicts = {
 export {
   FullWords,
   ComnWords,
-  ObscWords,
   Dicts,
 }

@@ -1,9 +1,7 @@
 {
-
   "exclude": [
-    "node_modules", "built", "data",
+    "node_modules", "built", "rawd", "scripts",
   ],
-
   "compilerOptions": {
     "outDir": "./built",
     "target": "esnext",
@@ -21,6 +19,7 @@
     "paths": {
       "@/*": ["src/*"],
     },
+    "allowJs": true,
     "baseUrl": "."
   },
   "include": [
@@ -28,6 +27,7 @@
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
+    "data/*.js",
     "../../lib/heroicons.d.ts"
   ]
 }
