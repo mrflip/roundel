@@ -5,8 +5,6 @@ dist/*
 !/dist/index.html
 **/node_modules
 **/dist
-wasmegg/_common/loot/mission_reward_count-pretty.json
-yarn.lock
 
 # Yarn 2 gitignore patterns
 

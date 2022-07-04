@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
-  "type": "module",
+  "_type": "module",
   "scripts": {
     "dev": "LOCAL=true vite",
     "build": "vue-tsc --noEmit && vite build",
