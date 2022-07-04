@@ -18,6 +18,7 @@ export class Roundel implements TY.Roundel {
   nogos:        TY.Guess[]
   hints:        Guess[]
   dispLtrs:     string
+  ol:           boolean
 
   _lexMatches: { [letters: string]: any }
   _allWords!:   string[]
@@ -28,7 +29,7 @@ export class Roundel implements TY.Roundel {
     this.updatedAt   = (obj.updatedAt || moment().format('YYYYMMDD'))
     //
     this.mainLetter  = this.letters[0]  //eslint-disable-line
-    this.pangRe   = Roundel.makePangRe(this.letters)
+    this.pangRe      = Roundel.makePangRe(this.letters)
     this.rejectRe    = Roundel.makeRejectRe(this.letters)
     //
     // @ts-ignore
@@ -44,6 +45,7 @@ export class Roundel implements TY.Roundel {
     this._lexMatches = {}
     this.hints       = this.getHints()
     this.dispLtrs    = Roundel.dispLtrs(this.letters)
+    this.ol         = (!! obj.ol)
   }
 
   resetGooduns() {
@@ -70,6 +72,13 @@ export class Roundel implements TY.Roundel {
     return [firl, ...luniq].join('')
   }
 
+  static attemptable(letters: string) {
+    if (letters.length !== 7) { return false }
+    const pangReStr = letters.split('').map((ltr) => `(?=.*${ltr})`).join('')
+    const pangRe = RegExp(`${pangReStr}(^[${letters}]+$)`, 'i')
+    return Dicts.hasMatchFor(pangRe, 'full')
+  }
+
   static dispLtrs(letters: string): string {
     const la = letters.toUpperCase().split('')
     return [la.shift(), '/', ...la].join(' ')
@@ -93,6 +102,10 @@ export class Roundel implements TY.Roundel {
 
   totScore(): number {
     return this.gooduns.reduce((tot, guess) => (tot + guess.score), 0)
+  }
+
+  fullScore(): number {
+    return this.gooduns.reduce((tot, guess) => (tot + guess.fullScore), 0)
   }
 
   pangScore(wd: string): number {
@@ -208,7 +221,6 @@ export class Roundel implements TY.Roundel {
     if (sectionIndex < 0) return null
     let itemIndex    = _.findIndex(gBS[sectionIndex].data, (gg) => (gg.word === guess.word))
     if (itemIndex < 0) { itemIndex = 0 }
-    // console.log(lens, sectionIndex, gBS[sectionIndex], itemIndex)
     return ({ sectionIndex, itemIndex, viewPosition: 0.25 })
   }
 
@@ -223,7 +235,6 @@ export class Roundel implements TY.Roundel {
   summaryInfo(lex: TY.LexName) {
     const { grouped, topScore, num } = this.lexMatches(lex)
     const [count, roundelHist] = this.wordHist(lex)
-    console.log(roundelHist)
     const totHist = Object
       .entries(grouped)
     // @ts-ignore
@@ -232,7 +243,6 @@ export class Roundel implements TY.Roundel {
       .map(([len, vct]: [number, number]) => `${len}:${roundelHist.get(len)}/${vct || '-'}`)
       .join(' ')
     const totScore = this.totScore()
-    console.log({ totScore, topScore, count, num, totHist })
     return { totScore, topScore, count, num, totHist }
   }
 
@@ -242,6 +252,23 @@ export class Roundel implements TY.Roundel {
       count, num, totHist,
     } = this.summaryInfo(lex)
     return `${totScore}/${topScore} (${count}/${num}): ${totHist}`
+  }
+
+  get dt()  { return this.datestr }
+  get cp()  { return _.isEmpty(this.gooduns) ? undefined : this.totScore() }
+  get fp()  { return _.isEmpty(this.gooduns) ? undefined : this.fullScore() }
+  get cw()  { return _.filter(this.gooduns, 'comn').length }
+  get fw()  { return _.filter(this.gooduns, 'full').length }
+  get cpx() { return this.lexMatches('comn').topScore }
+  get cwx() { return this.lexMatches('comn').num      }
+  get fpx() { return this.lexMatches('full').topScore }
+  get fwx() { return this.lexMatches('full').num      }
+  get up()  { return this.updatedAt }
+
+  get sketch() {
+    const { letters: ll,                   dt, ol, cp, cpx, cw, cwx, fp, fpx, fw, fwx, up } = this
+    const sketch: TY.RoundelSketch = { ll, dt, ol, cp, cpx, cw, cwx, fp, fpx, fw, fwx, up }
+    return _.omitBy(sketch, _.isNil) as TY.RoundelSketch
   }
 
   get pangGooduns() {

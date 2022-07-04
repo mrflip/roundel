@@ -5,7 +5,7 @@ import JSSoupLib                        from 'jssoup'
 import glob                             from 'glob'
 import moment                           from 'moment'
 //
-import Roundel                              from '../built/src/lib/Roundel'
+import Roundel                          from '../built/src/lib/Roundel'
 import ArchDict                         from '../data/dict_arch.json' assert { type: 'json' }
 
 // --- Setup
@@ -17,7 +17,7 @@ const JSSoup = JSSoupLib.default
 // --- Parse
 const AllWords = new Set(ArchDict)
 const AllObs   = new Set()
-const AllRoundels  = []
+const AllDnas  = []
 
 const VOWELS   = new Set('a', 'e', 'i', 'o', 'u')
 
@@ -100,7 +100,7 @@ glob(`${data_dir}/Bee*.html`, (err, files) => {
 
     console.log('Parsed', filename, words.letters, words.wds.length, words.obs.length)
 
-    AllRoundels.push(words)
+    AllDnas.push(words)
   })
 
   // Make the whole dictionary into the shapes we want
@@ -109,22 +109,24 @@ glob(`${data_dir}/Bee*.html`, (err, files) => {
   const all_obs = Array.from(AllObs.values()).sort()
   // console.log(all_wds)
 
-  const all_ltrs = AllRoundels.map((bb) => [bb.letters.toUpperCase(), bb.datestr])
-  all_ltrs.sort(([_wa, da], [_wb, db]) => (da < db ? 1 : -1))
+  AllDnas.sort(({ datestr: da }, { datestr: db }) => (da < db ? 1 : -1))
+  const allRoundels = _.mapKeys(AllDnas.map((bb) => ({
+    letters: bb.letters.toUpperCase(), datestr: bb.datestr, ol: true,
+  })), 'letters')
 
   const stats = {
     wordsUpdated:       moment().format('YYYYMMDD'),
     latestRoundel,
     wordsCount:         all_wds.length,
-    comnRoundelsCount:       all_ltrs.length,
+    comnRoundelsCount:  AllDnas.length,
   }
 
   // Write to disk
 
-  fs.writeFileSync('./data/dict_comn.json',  JSON.stringify(all_wds,  0, 2) + '\n', { encoding: 'utf8' })
-  fs.writeFileSync('./data/dict_obs.json',   JSON.stringify(all_obs,  0, 2) + '\n', { encoding: 'utf8' })
-  fs.writeFileSync('./data/roundels.json',   JSON.stringify(all_ltrs, 0, 2) + '\n', { encoding: 'utf8' })
-  fs.writeFileSync('./data/comn_stats.json', JSON.stringify(stats,    0, 2) + '\n', { encoding: 'utf8' })
+  fs.writeFileSync('./data/dict_comn.json',    JSON.stringify(all_wds,     0, 2) + '\n', { encoding: 'utf8' })
+  fs.writeFileSync('./data/dict_obs.json',     JSON.stringify(all_obs,     0, 2) + '\n', { encoding: 'utf8' })
+  fs.writeFileSync('./data/roundel_dnas.json', JSON.stringify(allRoundels, 0, 2) + '\n', { encoding: 'utf8' })
+  fs.writeFileSync('./data/comn_stats.json',   JSON.stringify(stats,       0, 2) + '\n', { encoding: 'utf8' })
 
   // Report on success
 

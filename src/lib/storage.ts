@@ -1,6 +1,11 @@
 import _                           /**/ from 'lodash'
 import * as TY          from './types.js'
 import Roundel                          from './Roundel'
+import seedDnas                         from '../../data/roundels.json'
+
+const RoundelsIndex: TY.RoundelsIndex = seedDnas
+
+const ROUNDEL_INDEX_KEY = 'roundelIndex'
 
 export function getLocalStorage(key: string): string | undefined {
   try {
@@ -37,7 +42,7 @@ export function loadBagWithFallback<T>(storageKey: string, fallback: T): T {
   return fallback
 }
 
-export function loadBag<T>(storageKey: string): T | undefined {
+export function loadBag(storageKey: string): any | undefined {
   const rawJson  = getLocalStorage(storageKey)
   if (rawJson) {
     try {
@@ -55,13 +60,26 @@ function mergeLoaded<T>(parsed: Partial<T>, fallback: T): T {
   return _.pick(_.merge({}, fallback, parsed), _.keys(fallback)) as T
 }
 
+export function loadRoundels() {
+  const loaded   = loadBag(ROUNDEL_INDEX_KEY) || {}
+  _.merge(RoundelsIndex, loaded)
+  return RoundelsIndex
+}
+
+export function storeRoundels(roundelsIndex: TY.RoundelsIndex) {
+  storeBag(ROUNDEL_INDEX_KEY, roundelsIndex)
+}
+
 export function storeRoundel(roundel: TY.Roundel) {
+  console.log('storeRoundel', roundel.letters, RoundelsIndex[roundel.letters.toUpperCase()], roundel.sketch)
   storeBag(roundel.letters, roundel.serialize())
+  RoundelsIndex[roundel.letters.toUpperCase()] = roundel.sketch
+  storeRoundels(RoundelsIndex)
 }
 
 export function loadRoundel(raw: Partial<Roundel>): Roundel {
   const letters = Roundel.normalize(raw.letters!)
-  const loaded  = loadBag<Roundel>(letters)
+  const loaded  = loadBag(letters)
   const bag = _.merge({}, loaded || {}, raw, { letters, stored: (!! loaded) })
   return bag as Roundel
 }

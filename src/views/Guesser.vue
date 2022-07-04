@@ -23,13 +23,19 @@
     </div>
 
     <div class="flex flex-row w-full relative h-screen">
-      <GuessScroller :roundel="roundel" :items="roundel.gooduns" class="absolute left-0"  flavor="guesses" />
-      <GuessScroller :roundel="roundel" :items="roundel.nogos" v-show="(! hintsOn)" class="absolute right-0" flavor="nogos"  @delGuess="delGuess" />
-      <GuessScroller :roundel="roundel" :items="roundel.hints" v-show="hintsOn" class="absolute right-0" flavor="hints" :reveal="reveal" />
+      <GuessScroller :roundel="roundel" :items="roundel.gooduns"                    class="absolute left-0"  flavor="guesses" @delGuess="delGuess" />
+      <GuessScroller :roundel="roundel" :items="roundel.nogos" v-show="(! hintsOn)" class="absolute right-0" flavor="nogos"   @delGuess="delGuess" />
+      <GuessScroller :roundel="roundel" :items="roundel.hints" v-show="hintsOn"     class="absolute right-0" flavor="hints"   @resetMaybe="resetMaybe" :reveal="reveal" />
     </div>
 
-    <GuessConsole :roundel="roundel" @addGuess="addGuess" />
+    <div class="p-2 sm:py-3 justify-center items-center absolute bottom-0 inset-x-0 bg-gray-200/90 backdrop-blur-sm z-50">
+      <GuessConsole :roundel="roundel" @addGuess="addGuess" />
 
+      <div class="flex flex-col text-xs md:text-lg md:mt-2">
+        <div class="flex flex-row"><span class="w-10 md:w-14">comm&nbsp;</span><span>{{ roundel.summary('comn') }}</span></div>
+        <div class="flex flex-row"><span class="w-10 md:w-14">full&nbsp;</span><span>{{ roundel.summary('full') }}</span></div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -61,7 +67,6 @@ export default defineComponent({
   },
   data() {
     const roundel = Roundel.from(loadRoundel({ letters: this.letters }))
-    console.log('data', roundel)
     const hintsOn = false
     const reveal = 0
     return {
@@ -88,26 +93,30 @@ export default defineComponent({
   // },
 
   methods: {
+    resetMaybe() {
+      if (confirm('are you sure?')) {
+        this.roundel.resetGooduns()
+        this.hintsOn = false
+        this.reveal  = 0
+        this.storeRoundel()
+      }
+    },
+
     incrReveal() { this.reveal += 1 },
     decrReveal() { this.reveal -= 1 },
     hideHints() {
-      console.log('hideHints', this.reveal, this.hintsOn)
       this.reveal  = 0
       this.hintsOn = false
     },
     showHints() {
-      console.log('showHints', this.reveal, this.hintsOn)
       this.reveal  = 0
       this.hintsOn = true
     },
     addGuess(word: string) {
-      console.log('Guesser addGuess', word)
       this.roundel.addGuess(word)
-      console.log(this.roundel)
       this.storeRoundel()
     },
     delGuess(word: string) {
-      console.log('Guesser delGuess', word)
       this.roundel.delGuess(word)
       this.storeRoundel()
     },

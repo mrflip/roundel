@@ -16,6 +16,9 @@
     <template v-else v-for="item of items" :key="item.word">
       <guess-row :guess="item" :removable="removable" :reveal="reveal" @delGuess="(ev) => $emit('delGuess', ev)" />
     </template>
+    <div v-if="flavor === 'hints'" class="flex flex-row justify-center">
+      <button class="px-6 py-1 mt-2 mx-3 italic text-2xl bg-red-100"  @click="() => $emit('resetMaybe')">Reset Roundel</button>
+    </div>
   </div>
 </template>
 
@@ -29,7 +32,7 @@ import { Roundel }                      from '@/lib'
 //
 export default defineComponent({
   name:         "GuessScroller",
-  emits:        ['delGuess'],
+  emits:        ['delGuess', 'resetMaybe'],
   components:   { GuessRow },
   props: {
     roundel:    { type: Object as PropType<TY.Roundel>,  required: true },
@@ -40,7 +43,7 @@ export default defineComponent({
   },
   computed: {
     empty() { return _.isEmpty(this.items) },
-    removable() { return this.flavor === 'nogos' },
+    removable() { return /^(nogos|guesses)$/.test(this.flavor) },
     sections() {
       return Roundel.sectionListify(this.items, this.roundel)
     },

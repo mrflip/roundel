@@ -5,24 +5,26 @@ import * as TY          from './types.js'
 const Bowdlerizers = _.range(0, 15).map((len) => new RegExp(`^(.*?)(.{0,${len}})$`))
 
 export class Guess implements TY.Guess {
-  word:     string
-  len:      number
-  score:    number
-  pang:     boolean
-  full:     boolean
-  comn:     boolean
-  valid:    boolean
-  hasMain:  boolean
+  word:         string
+  len:          number
+  score:        number
+  fullScore:    number
+  pang:         boolean
+  full:         boolean
+  comn:         boolean
+  valid:        boolean
+  hasMain:      boolean
 
   constructor(wd: string, roundel: TY.Roundel) {
-    this.word    = wd.toLowerCase()
-    this.len     = this.word.length
-    this.pang     = roundel.isPang(this.word)
-    this.full    = Dicts.isFull(this.word)
-    this.comn    = Dicts.isComn(this.word)
-    this.valid   = (this.full || this.comn)
-    this.hasMain = roundel.hasMain(this.word)
-    this.score   = this.getScore()
+    this.word      = wd.toLowerCase()
+    this.len       = this.word.length
+    this.pang      = roundel.isPang(this.word)
+    this.full      = Dicts.isFull(this.word)
+    this.comn      = Dicts.isComn(this.word)
+    this.valid     = (this.full || this.comn)
+    this.hasMain   = roundel.hasMain(this.word)
+    this.score     = this.getScore()
+    this.fullScore = this.getFullScore()
   }
 
   revealed(reveal: number): string {
@@ -36,8 +38,12 @@ export class Guess implements TY.Guess {
   }
 
   getScore(): number {
+    if (! this.comn) return 0
+    return this.getFullScore()
+  }
+
+  getFullScore(): number {
     if (this.nogo)      return 0
-    if (! this.comn)     return 0
     if (this.len === 4) return 1
     return this.len + (this.pang ? 7 : 0)
   }

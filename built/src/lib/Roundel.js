@@ -1,4 +1,5 @@
 import _ /**/ from 'lodash';
+import moment from 'moment';
 import { sprintf } from 'sprintf-js';
 import Guess from './Guess.js';
 import { Dicts } from './Dicts.js';
@@ -14,12 +15,13 @@ export class Roundel {
     nogos;
     hints;
     dispLtrs;
+    ol;
     _lexMatches;
     _allWords;
     constructor(ltrs, obj = {}) {
         this.letters = Roundel.normalize(ltrs);
         this.datestr = (obj.datestr || Roundel.getDatestr());
-        this.updatedAt = (obj.updatedAt || '');
+        this.updatedAt = (obj.updatedAt || moment().format('YYYYMMDD'));
         //
         this.mainLetter = this.letters[0]; //eslint-disable-line
         this.pangRe = Roundel.makePangRe(this.letters);
@@ -38,6 +40,7 @@ export class Roundel {
         this._lexMatches = {};
         this.hints = this.getHints();
         this.dispLtrs = Roundel.dispLtrs(this.letters);
+        this.ol = (!!obj.ol);
     }
     resetGooduns() {
         this.gooduns = [];
@@ -62,6 +65,14 @@ export class Roundel {
         });
         return [firl, ...luniq].join('');
     }
+    static attemptable(letters) {
+        if (letters.length !== 7) {
+            return false;
+        }
+        const pangReStr = letters.split('').map((ltr) => `(?=.*${ltr})`).join('');
+        const pangRe = RegExp(`${pangReStr}(^[${letters}]+$)`, 'i');
+        return Dicts.hasMatchFor(pangRe, 'full');
+    }
     static dispLtrs(letters) {
         const la = letters.toUpperCase().split('');
         return [la.shift(), '/', ...la].join(' ');
@@ -80,6 +91,9 @@ export class Roundel {
     }
     totScore() {
         return this.gooduns.reduce((tot, guess) => (tot + guess.score), 0);
+    }
+    fullScore() {
+        return this.gooduns.reduce((tot, guess) => (tot + guess.fullScore), 0);
     }
     pangScore(wd) {
         return (wd.length + (this.isPang(wd) ? 7 : 0));
@@ -165,7 +179,9 @@ export class Roundel {
         return _(gooduns)
             .groupBy('len')
             .map((gs, len) => ({
-            title: `${len}s (${gs.length}/${full_nums[len]} | ${gs.filter((gg) => gg.comn).length}/${comn_nums[len]})`,
+            key: String(len),
+            title: `${len}s`,
+            stats: `(${gs.length}/${full_nums[len]} | ${gs.filter((gg) => gg.comn).length}/${comn_nums[len]})`,
             data: gs,
         }))
             .value();
@@ -182,7 +198,6 @@ export class Roundel {
         if (itemIndex < 0) {
             itemIndex = 0;
         }
-        // console.log(lens, sectionIndex, gBS[sectionIndex], itemIndex)
         return ({ sectionIndex, itemIndex, viewPosition: 0.25 });
     }
     lexMatches(lex) {
@@ -198,9 +213,9 @@ export class Roundel {
         const totHist = Object
             .entries(grouped)
             // @ts-ignore
-            .map(([len, vv]) => [len, vv.length])
+            .map(([len, vv]) => [Number(len), vv.length])
             // @ts-ignore
-            .map(([len, vct]) => `${len}:${roundelHist.get(len)}/${vct}`)
+            .map(([len, vct]) => `${len}:${roundelHist.get(len)}/${vct || '-'}`)
             .join(' ');
         const totScore = this.totScore();
         return { totScore, topScore, count, num, totHist };
@@ -208,6 +223,21 @@ export class Roundel {
     summary(lex) {
         const { totScore, topScore, count, num, totHist, } = this.summaryInfo(lex);
         return `${totScore}/${topScore} (${count}/${num}): ${totHist}`;
+    }
+    get dt() { return this.datestr; }
+    get cp() { return _.isEmpty(this.gooduns) ? undefined : this.totScore(); }
+    get fp() { return _.isEmpty(this.gooduns) ? undefined : this.fullScore(); }
+    get cw() { return _.filter(this.gooduns, 'comn').length; }
+    get fw() { return _.filter(this.gooduns, 'full').length; }
+    get cpx() { return this.lexMatches('comn').topScore; }
+    get cwx() { return this.lexMatches('comn').num; }
+    get fpx() { return this.lexMatches('full').topScore; }
+    get fwx() { return this.lexMatches('full').num; }
+    get up() { return this.updatedAt; }
+    get sketch() {
+        const { letters: ll, dt, ol, cp, cpx, cw, cwx, fp, fpx, fw, fwx, up } = this;
+        const sketch = { ll, dt, ol, cp, cpx, cw, cwx, fp, fpx, fw, fwx, up };
+        return _.omitBy(sketch, _.isNil);
     }
     get pangGooduns() {
         return _.filter(this.gooduns, 'isPang');
@@ -234,7 +264,7 @@ export class Roundel {
         return _.pickBy({
             letters: this.letters.toUpperCase(),
             datestr: this.datestr,
-            updatedAt: this.updatedAt,
+            updatedAt: moment().format('YYYYMMDD'),
             gooduns: this.gooduns.map((gg) => gg.word),
             nogos: this.nogos.map((gg) => gg.word),
         });

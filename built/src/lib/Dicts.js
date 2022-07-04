@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import FullWords from '../../data/dict_full.json' assert { type: 'json' };
-import ComnWords from '../../data/dict_comn.json' assert { type: 'json' };
-import ObscWords from '../../data/dict_obsc.json' assert { type: 'json' };
+import FullWords from '../../data/dict_full.json'; // assert { type: 'json' }
+import ComnWords from '../../data/dict_comn.json'; // assert { type: 'json' }
+import ObscWords from '../../data/dict_obsc.json'; // assert { type: 'json' }
 const Dicts = {
     full: new Set(FullWords),
     comn: new Set(ComnWords),
@@ -35,7 +35,14 @@ const Dicts = {
         _.range(4, 15).forEach((nn) => nums[nn] = (grouped[nn] || []).length); // eslint-disable-line
         //
         return { words, topScore, grouped, nums, num: words.length };
-    }
+    },
+    lexMatchesFor(re, lex) {
+        const words = Dicts[`${lex}_wds`].filter((wd) => re.test(wd));
+        return words;
+    },
+    hasMatchFor(re, lex) {
+        return Dicts[`${lex}_wds`].find((wd) => re.test(wd));
+    },
 };
 // export default Dicts
 export { FullWords, ComnWords, ObscWords, Dicts, };

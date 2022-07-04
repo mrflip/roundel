@@ -11,14 +11,14 @@ const BASE_ROUTE = '/'
 const routes: RouteRecordRaw[] = [
   {
     name:       'roundels',
-    path:       BASE_ROUTE + ':playerID?',
+    path:       BASE_ROUTE + ':playerID',
     component:  Roundels,
     props:      true,
   },
 
   {
     name:       'guesser',
-    path:       BASE_ROUTE + ':playerID?/roundels/:letters',
+    path:       BASE_ROUTE + ':playerID/roundels/:letters',
     component:  Guesser,
     props:      true,
   },

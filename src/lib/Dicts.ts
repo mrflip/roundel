@@ -37,7 +37,17 @@ const Dicts = {
     _.range(4, 15).forEach((nn) => nums[nn] = (grouped[nn] || []).length) // eslint-disable-line
     //
     return { words, topScore, grouped, nums, num: words.length }
-  }
+  },
+
+  lexMatchesFor(re: RegExp, lex: TY.LexName) {
+    const words: string[] = Dicts[`${lex}_wds`].filter((wd) => re.test(wd))
+    return words
+  },
+
+  hasMatchFor(re: RegExp, lex: TY.LexName) {
+    return Dicts[`${lex}_wds`].find((wd) => re.test(wd))
+  },
+
 }
 
 // export default Dicts

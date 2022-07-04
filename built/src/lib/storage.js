@@ -1,5 +1,8 @@
 import _ /**/ from 'lodash';
 import Roundel from './Roundel';
+import seedDnas from '../../data/roundels.json';
+const RoundelsIndex = seedDnas;
+const ROUNDEL_INDEX_KEY = 'roundelIndex';
 export function getLocalStorage(key) {
     try {
         return localStorage[key];
@@ -51,15 +54,24 @@ export function loadBag(storageKey) {
 function mergeLoaded(parsed, fallback) {
     return _.pick(_.merge({}, fallback, parsed), _.keys(fallback));
 }
+export function loadRoundels() {
+    const loaded = loadBag(ROUNDEL_INDEX_KEY) || {};
+    _.merge(RoundelsIndex, loaded);
+    return RoundelsIndex;
+}
+export function storeRoundels(roundelsIndex) {
+    storeBag(ROUNDEL_INDEX_KEY, roundelsIndex);
+}
 export function storeRoundel(roundel) {
-    console.log('storeRoundel', roundel.serialize());
+    console.log('storeRoundel', roundel.letters, RoundelsIndex[roundel.letters.toUpperCase()], roundel.sketch);
     storeBag(roundel.letters, roundel.serialize());
-    console.log('see?', loadRoundel(roundel.letters));
+    RoundelsIndex[roundel.letters.toUpperCase()] = roundel.sketch;
+    storeRoundels(RoundelsIndex);
 }
 export function loadRoundel(raw) {
-    const letters = Roundel.normalize(raw);
-    const bag = loadBag(letters);
-    console.log('loadRoundel', letters, bag);
-    return Roundel.from(bag ?? { letters });
+    const letters = Roundel.normalize(raw.letters);
+    const loaded = loadBag(letters);
+    const bag = _.merge({}, loaded || {}, raw, { letters, stored: (!!loaded) });
+    return bag;
 }
 //# sourceMappingURL=storage.js.map

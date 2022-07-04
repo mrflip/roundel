@@ -12,6 +12,7 @@ export interface Roundel {
   hints:        Guess[]
   dispLtrs:     string
   upltrs:       string[]
+  sketch:       RoundelSketch
 
   _lexMatches: { [letters: string]: any }
   _allWords:    string[]
@@ -25,16 +26,34 @@ export interface Roundel {
   // static normEntry(word: string): string
 }
 
+export interface RoundelSketch {
+  ll:           string
+  dt:           string
+  fp?:          number
+  fpx:          number
+  fw?:          number
+  fwx:          number
+  cp?:          number
+  cpx:          number
+  cw?:          number
+  cwx:          number
+  ol:           boolean
+  up?:          string
+}
+
+export type RoundelsIndex = { [key: string]: RoundelSketch }
+
 export interface Guess {
-  word:     string
-  len:      number
-  score:    number
-  pang:     boolean
-  full:     boolean
-  comn:     boolean
-  valid:    boolean
-  hasMain:  boolean
-  nogo:     boolean
+  word:         string
+  len:          number
+  score:        number
+  fullScore:    number
+  pang:         boolean
+  full:         boolean
+  comn:         boolean
+  valid:        boolean
+  hasMain:      boolean
+  nogo:         boolean
 
   revealed(num: number): string
 

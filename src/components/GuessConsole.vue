@@ -1,5 +1,5 @@
 <template>
-  <div class="p-2 sm:py-3 justify-center items-center absolute bottom-0 inset-x-0 bg-gray-200/90 backdrop-blur-sm z-50">
+  <div>
     <div class="flex flex-row md:px-2 px-1 justify-center items-center m-auto">
       <button
         @click="delLetter"
@@ -36,10 +36,6 @@
       </template>
     </div>
 
-    <div class="flex flex-col text-xs md:text-lg md:mt-2">
-      <div class="flex flex-row"><span class="w-10 md:w-14">comm&nbsp;</span><span>{{ roundel.summary('comn') }}</span></div>
-      <div class="flex flex-row"><span class="w-10 md:w-14">full&nbsp;</span><span>{{ roundel.summary('full') }}</span></div>
-    </div>
   </div>
 
 </template>
@@ -84,18 +80,15 @@ export default defineComponent({
       this.$refs.word.value = normed
     },
     insertLetter(letter: string) {
-      console.log('insertLetter', letter)
       this.setWord(this.word + letter.toLowerCase())
     },
     delLetter() {
-      console.log('delLetter')
       this.setWord(this.word.slice(0, -1))
     },
     clearWord() {
       this.setWord('')
     },
     addGuess() {
-      console.log('addGuess', this.word)
       this.$emit('addGuess', this.word)
       this.clearWord()
     },

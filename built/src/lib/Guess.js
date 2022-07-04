@@ -5,6 +5,7 @@ export class Guess {
     word;
     len;
     score;
+    fullScore;
     pang;
     full;
     comn;
@@ -19,6 +20,7 @@ export class Guess {
         this.valid = (this.full || this.comn);
         this.hasMain = roundel.hasMain(this.word);
         this.score = this.getScore();
+        this.fullScore = this.getFullScore();
     }
     revealed(reveal) {
         if (!_.isNumber(reveal)) {
@@ -32,9 +34,12 @@ export class Guess {
         return this.word.replace(bowler, (_m, hide, show) => (stars + show)); // eslint-disable-line
     }
     getScore() {
-        if (this.nogo)
-            return 0;
         if (!this.comn)
+            return 0;
+        return this.getFullScore();
+    }
+    getFullScore() {
+        if (this.nogo)
             return 0;
         if (this.len === 4)
             return 1;
