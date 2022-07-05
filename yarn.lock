@@ -2312,6 +2312,11 @@ vue-tsc@^0.35.0:
   dependencies:
     "@volar/vue-typescript" "0.35.2"
 
+vue3-tabs-component@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/vue3-tabs-component/-/vue3-tabs-component-1.0.9.tgz#92891cdaeadc2fdcc0371b7de067001da0d5605e"
+  integrity sha512-USw+W5qtudkw5Wm6RlrF1Wwhv5gECZ7SijQ7eSeVJKHhrZ9VPYFstvjPyWDtGYbQ/tZTduTdIxbzTzywNxaIYQ==
+
 vue@*, vue@^3.2.36, vue@^3.2.37:
   version "3.2.37"
   resolved "https://registry.yarnpkg.com/vue/-/vue-3.2.37.tgz#da220ccb618d78579d25b06c7c21498ca4e5452e"

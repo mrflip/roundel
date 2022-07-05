@@ -18,3 +18,5 @@ declare module '*.vue' {
 //     $route:  VueRouter.Route
 //   }
 // }
+
+declare module '@kouts/vue-modal'

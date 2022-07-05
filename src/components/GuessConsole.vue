@@ -27,7 +27,7 @@
     <div class="button-keys flex mt-2 md:px-4 m-auto items-center justify-between align-middle text-center ">
       <template v-for="[letter, idxCC] of indexedLtrs" :key="letter">
         <button
-          @click="() => insertLetter(String(letter))"
+          @click="() => insertLetter(letter)"
           class="w-full mx-1.5 sm:mx-2 md:mx-3 max-w-24 text-2xl xs:text-4xl sm:text-5xl h-12 xs:h-16 sm:h-[4.5rem] md:h-20 border-transparent rounded-md shadow-sm text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
           :class="`ltr ltr${idxCC}`"
         >
@@ -58,17 +58,11 @@ export default defineComponent({
   //
   data() {
     const word = ''
+    const indexedLtrs = this.roundel.upltrs.map((ltr: string, idx: number) => [ltr, idx])
     return {
       word,
+      indexedLtrs,
     }
-  },
-  computed: {
-    indexedLtrs() { return this.roundel.upltrs.map((ltr: string, idx: number) => [ltr, idx]) },
-  },
-
-  mounted() {
-    // @ts-ignore
-    // this.$refs.word.focus()
   },
 
   methods: {

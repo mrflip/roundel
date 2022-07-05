@@ -75,8 +75,6 @@
 import _                           /**/ from 'lodash'
 import { defineComponent, PropType }    from 'vue'
 // import { onBeforeRouteUpdate, useRouter, RouteLocationNormalized } from 'vue-router'
-// import Modal from '@kouts/vue-modal'
-// import '@kouts/vue-modal/dist/vue-modal.css'
 import {
   XCircleIcon,
 }                                       from "@heroicons/vue/outline"
@@ -97,7 +95,7 @@ export default defineComponent({
     wtfVue:   { type: String as PropType<string>, default: 'this is needed or it effs up typescript' },
   },
   data() {
-    const playerID: string = ''
+    const playerID: string = 'flip'
     const globals = loadGlobals()
     const { playerIDs } = globals
     //

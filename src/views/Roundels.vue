@@ -4,11 +4,11 @@
   <div class="flex w-5xl relative">
     <div class="flex flex-col justify-center absolute inset-x-0 top-0 bg-gray-100/75 backdrop-blur-sm z-50">
       <div class="flex flex-row px-3 my-1 items-center justify-center">
-        <a href="/#/">
+        <button @click="showPlayerMenu = true">
           <h1 class="px-2 pt-3 pb-2 text-center text-xl xs:text-xl sm:text-3xl leading-6 font-medium text-gray-900 transparent">
             Roundel
           </h1>
-        </a>
+        </button>
         <component @click="useNextAxis" :is="sorting.icon" class="h-10 w-10" :class="/R/.test(sortAxis) ? 'rotate-180' : ''" />
         <input
           class="px-2 mx-2 h-10 w-[8rem] xs:w-[14rem] sm:w-[18rem] text-xl bg-violet-50 border border-violet-md rounded-md placeholder:italic placeholder:text-slate-400 box-border"
@@ -27,6 +27,7 @@
         >
           {{ attemptable ? 'Begin' : '' }}
         </button>
+        {{ search }}
       </div>
       <div class="roundel-row pl-2 flex flex-row text-center justify-center">
         <SortingHeader name="title"    class="w-28             xs:w-32         " :sorting="sorting" @setSortAxis="setSortAxis" />
@@ -50,12 +51,22 @@
       </template>
     </div>
   </div>
+
+  <Modal
+    v-model="showPlayerMenu"
+    :title="`Options for Player ${playerID}`"
+    modal-class="w-2xl max-w-2xl"
+  >
+    <PlayerMenu :playerID="playerID" @hidePlayerMenu="showPlayerMenu = false" />
+  </Modal>
 </template>
 
 <script lang="ts">
 import _                           /**/ from 'lodash'
 import { defineComponent, PropType }    from 'vue'
 import { onBeforeRouteUpdate, useRouter, RouteLocationNormalized } from 'vue-router'
+import Modal from '@kouts/vue-modal'
+import '@kouts/vue-modal/dist/vue-modal.css'
 import {
   PaperAirplaneIcon as TitleSortIcon, CalendarIcon as DateSortIcon,      BookOpenIcon as LastPlayedIcon,
   LightBulbIcon     as ScoreSortIcon, ScaleIcon    as MaxPointsSortIcon, HashtagIcon  as MaxWordsSortIcon,
@@ -65,6 +76,7 @@ import * as TY                          from '@/lib/types'
 import * as Lib                         from '@/lib'
 import RoundelRow                       from '@/components/RoundelRow.vue'
 import SortingHeader                    from '@/components/SortingHeader.vue'
+import PlayerMenu                       from '@/components/PlayerMenu.vue'
 
 const { Guess, Roundel, storeRoundel, loadRoundel, loadRoundels, storePrefs, loadPrefs } = Lib
 
@@ -78,7 +90,7 @@ function sortByScore(sketch: TY.RoundelSketch, dir: 'asc' | 'desc') {
   // 100% complete, order by max pointts
   if (fp === fpx) { return fp }
   // not attempted, force to end
-  if (! cp) { return (dir === 'desc' ? -1 : 1e6) }
+  if ((! cp) || (cp < 1)) { return (dir === 'desc' ? (-1e6 + cpx) : (1e6 + cpx)) }
   return (cp / cpx) * Math.sqrt(fp / fpx)
 }
 
@@ -101,7 +113,7 @@ const SortAxes: { [key: string]: TY.RoundelSorting } = {
 
 export default defineComponent({
   components: {
-    RoundelRow, SortingHeader,
+    RoundelRow, SortingHeader, Modal, PlayerMenu,
     TitleSortIcon, DateSortIcon, LastPlayedIcon, ScoreSortIcon, MaxPointsSortIcon, MaxWordsSortIcon,
   },
   props: {
@@ -128,6 +140,7 @@ export default defineComponent({
       sortAxis,
       search,
       attemptable,
+      showPlayerMenu: false,
     }
     return data
   },
@@ -147,6 +160,10 @@ export default defineComponent({
       const sg = { ...baseSorting, sortAxis: this.sortAxis }
       return sg
     },
+  },
+
+  mounted() {
+    this.$refs.search.value = this.search
   },
 
   methods: {

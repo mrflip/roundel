@@ -20,7 +20,7 @@ export interface Roundel {
   hasMain(str: string): boolean
   isPang(word: string): boolean
   lexMatches(lex: LexName): LexMatches
-  serialize(): Partial<Roundel>
+  serialize(opts?: { updatePlayed: boolean }): Partial<Roundel>
   summary(lex: LexName): string
 
   ll:           string

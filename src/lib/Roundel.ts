@@ -300,11 +300,12 @@ export class Roundel implements TY.Roundel {
     return [count, hist]
   }
 
-  serialize() {
+  serialize({ updatePlayed = true } = {}) {
+    const updatedAt = updatePlayed ? moment().format('YYYYMMDD') : this.updatedAt
     return _.pickBy({
       letters:          this.letters.toUpperCase(),
       datestr:          this.datestr,
-      updatedAt:        moment().format('YYYYMMDD'),
+      updatedAt,
       gooduns:          this.gooduns.map((gg) => gg.word),
       nogos:            this.nogos.map((gg) => gg.word),
     })

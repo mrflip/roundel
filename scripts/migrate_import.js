@@ -12,12 +12,13 @@ const AllRoundels = {}
 
 _.each(OtherDnas, (dna) => {
   if (_.isEmpty(dna.guesses)) { return }
+  const baseline = RoundelDnas[dna.letters.toUpperCase()] || {}
   dna.gooduns = dna.guesses
-  const roundel = Roundel.from({ ...dna, ol: false, ...RoundelDnas[dna.letters.toUpperCase()] })
+  const roundel = Roundel.from({ ...dna, ol: false, ...baseline })
   AllRoundels[dna.letters] = roundel
 })
 
-const Serialized = _.map(AllRoundels, (rr) => rr.serialize())
+const Serialized = _.map(AllRoundels, (rr) => rr.serialize({ updatePlayed: false }))
 
 console.log(Serialized.length)
 
