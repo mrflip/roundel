@@ -30,7 +30,6 @@ export default defineComponent({
   },
   methods: {
     delGuess() {
-      console.log('GuessRow delGuess', this.guess.word)
       this.$emit('delGuess', this.guess.word)
     },
   },

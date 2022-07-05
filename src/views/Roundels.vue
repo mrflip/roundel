@@ -1,20 +1,24 @@
 <template>
+  <teleport to="head"><title>{{ playerID }}'s Roundels — Lexy.af by @mrflip</title></teleport>
+
   <div class="flex w-5xl relative">
     <div class="flex flex-col justify-center absolute inset-x-0 top-0 bg-gray-100/75 backdrop-blur-sm z-50">
       <div class="flex flex-row px-3 my-1 items-center justify-center">
-        <h1 class="px-2 pt-3 pb-2 text-center text-xl xs:text-xl sm:text-3xl leading-6 font-medium text-gray-900 transparent">
-          Roundel
-        </h1>
+        <a href="/#/">
+          <h1 class="px-2 pt-3 pb-2 text-center text-xl xs:text-xl sm:text-3xl leading-6 font-medium text-gray-900 transparent">
+            Roundel
+          </h1>
+        </a>
         <component @click="useNextAxis" :is="sorting.icon" class="h-10 w-10" :class="/R/.test(sortAxis) ? 'rotate-180' : ''" />
         <input
-          class="px-2 mx-2 h-10 w-[8rem] xs:w-[12rem] text-xl bg-violet-50 border border-violet-md rounded-md placeholder:italic placeholder:text-slate-400 box-border"
+          class="px-2 mx-2 h-10 w-[8rem] xs:w-[14rem] sm:w-[18rem] text-xl bg-violet-50 border border-violet-md rounded-md placeholder:italic placeholder:text-slate-400 box-border"
           ref="search"
           :id="search"
           :name="search"
           :v-model="search"
           @input="setSearch(($event.target as any).value)"
           @keyup.enter="() => navToGuesser({ letters: search })"
-          placeholder="type to search or create new roundel"
+          placeholder="type to search or add"
         />
         <button
           @click="() => navToGuesser({ letters: search })"
@@ -50,7 +54,7 @@
 
 <script lang="ts">
 import _                           /**/ from 'lodash'
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType }    from 'vue'
 import { onBeforeRouteUpdate, useRouter, RouteLocationNormalized } from 'vue-router'
 import {
   PaperAirplaneIcon as TitleSortIcon, CalendarIcon as DateSortIcon,      BookOpenIcon as LastPlayedIcon,
@@ -61,7 +65,7 @@ import * as TY                          from '@/lib/types'
 import * as Lib                         from '@/lib'
 import RoundelRow                       from '@/components/RoundelRow.vue'
 import SortingHeader                    from '@/components/SortingHeader.vue'
-//
+
 const { Guess, Roundel, storeRoundel, loadRoundel, loadRoundels, storePrefs, loadPrefs } = Lib
 
 interface GuesserParams {
@@ -101,33 +105,31 @@ export default defineComponent({
     TitleSortIcon, DateSortIcon, LastPlayedIcon, ScoreSortIcon, MaxPointsSortIcon, MaxWordsSortIcon,
   },
   props: {
-    playerID:   { type: String as PropType<string | undefined>,     default: undefined },
-    // bookmark:   { type: String as PropType<Bookmarker | undefined>, required: false, default: DEFAULT_BOOKMARK },
+    playerID:   { type: String as PropType<string>, required: true },
   },
+
   data() {
     //
     const prefs = loadPrefs(this.playerID)
     const { sortAxis, search } = prefs
     const attemptable = false
     //
-    const roundelsIndex = loadRoundels(this.playerID)
+    const roundelsIndex = loadRoundels()
     const roundelDnas = _.mapValues(roundelsIndex, (sketch) => {
       const raw = loadRoundel(this.playerID, { ...sketch, letters: sketch.ll, datestr: sketch.dt })
       // @ts-ignore
       return raw.stored ? Roundel.from(raw) : raw
     })
     //
+    console.log('Loaded', this.playerID, sortAxis, search)
+    //
     const data = {
       roundelDnas,
+      sortAxis,
       search,
       attemptable,
-      sortAxis,
     }
     return data
-  },
-
-  async beforeRouteUpdate(newRoute: RouteLocationNormalized) {
-    return true
   },
 
   computed: {
@@ -155,11 +157,7 @@ export default defineComponent({
       // @ts-ignore
       this.$router.push({ name: 'guesser', params: this.completeParams({ letters }) })
     },
-    /* submitPlayerID(id: string) {
-     *   this.playerID = id
-     *   this.refreshID = Date.now()
-     *   savePlayerID(id)
-     * }, */
+
     completeParams(overrides: Partial<GuesserParams>) {
       // @ts-ignore
       return _.merge({}, this.$route.params, overrides)

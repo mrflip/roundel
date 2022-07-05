@@ -19,7 +19,7 @@ _.each(OtherDnas, (dna) => {
 
 const Serialized = _.map(AllRoundels, (rr) => rr.serialize())
 
-console.log(Serialized.length, Serialized.slice(-30, -1))
+console.log(Serialized.length)
 
 // const TODAY = moment().format('YYYYMMDD')
 // _.each(AllSketches, (sketch) => { if (sketch.up === TODAY) { delete sketch.up } })

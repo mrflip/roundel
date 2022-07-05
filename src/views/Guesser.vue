@@ -1,23 +1,25 @@
 <template>
+  <teleport to="head"><title>{{ playerID }} — {{ roundel.dashedLetters }} — Lexy.af by @mrflip</title></teleport>
+
   <div class="flex w-5xl relative">
     <div class="flex flex-row px-2 pt-3 pb-2 justify-between items-center absolute inset-x-0 top-0 bg-gray-100/75 backdrop-blur-sm z-50">
-      <button @click="goToRoundles" class="w-20 sm:w-[12rem]">
-        <SparklesIcon class="h-12" />
+      <button @click="goToRoundles" class="w-12 xs:w-20 sm:w-[12rem]">
+        <SparklesIcon class="h-8 w-8 xs:h-12 xs:w-12" />
       </button>
-      <h1 class="text-center text-xl xs:text-2xl sm:text-3xl leading-6 font-medium text-gray-900">
-        {{ roundel.dashedLetters }}
+      <h1 class="text-center text-xl xs:text-2xl sm:text-4xl leading-6 font-medium text-gray-900">
+        <span v-html="roundel.dashedLetters.replace(/\s+/g, '&nbsp;')" />
       </h1>
       <template v-if="hintsOn">
         <div class="flex flex-row h-full items-center w-32 sm:w-[14rem] justify-between">
-          <button class="px-2 py-1 sm:px-4 text-2xl bg-gray-400"  @click="decrReveal">-</button>
-          <span   class="px-2 py-1 sm:px-4 text-2xl text-center">{{ reveal }}</span>
-          <button class="px-2 py-1 sm:px-4 text-2xl bg-gray-400" @click="incrReveal">+</button>
-          <EyeOffIcon @click="hideHints" class="h-12 w-12 ml-1 sm:ml-4" />
+          <button class="px-2 py-1 sm:px-4 text-xl bg-gray-400"  @click="decrReveal">-</button>
+          <span   class="px-2 py-1 sm:px-4 text-xl text-center">{{ reveal }}</span>
+          <button class="px-2 py-1 sm:px-4 text-xl bg-gray-400" @click="incrReveal">+</button>
+          <EyeOffIcon @click="hideHints" class="h-8 w-8 xs:h-12 xs:w-12 ml-1 sm:ml-4" />
         </div>
       </template>
       <template v-else>
-        <div class="flex flex-row h-full items-center w-28 sm:w-[12rem] justify-end">
-          <EyeIcon    @click="showHints" class="h-12" />
+        <div class="flex flex-row h-full items-center w-12 xs:w-20 sm:w-[12rem] justify-end">
+          <EyeIcon    @click="showHints" class="h-8 w-8 xs:h-12 xs:w-12 ml-1 sm:ml-4" />
         </div>
       </template>
     </div>
@@ -66,7 +68,7 @@ export default defineComponent({
     letters:     { type: String as PropType<string>,     required: true },
   },
   data() {
-    const roundel = Roundel.from(loadRoundel({ letters: this.letters }))
+    const roundel = Roundel.from(loadRoundel(this.playerID, { letters: this.letters }))
     const hintsOn = false
     const reveal = 0
     return {
@@ -121,7 +123,7 @@ export default defineComponent({
       this.storeRoundel()
     },
     storeRoundel() {
-      storeRoundel(this.roundel)
+      storeRoundel(this.playerID, this.roundel)
     },
     goToRoundles() {
       this.$router.push({ name: 'roundels', params: _.pick(this.completeParams(), ['playerID']) })

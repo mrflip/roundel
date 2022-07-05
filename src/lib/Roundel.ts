@@ -23,7 +23,7 @@ export class Roundel implements TY.Roundel {
   _lexMatches: { [letters: string]: any }
   _allWords!:   string[]
 
-  constructor(ltrs: string, obj: Partial<Roundel> = {}) {
+  constructor(ltrs: string, obj: Partial<TY.RoundelFodder> = {}) {
     this.letters     = Roundel.normalize(ltrs)
     this.datestr     = (obj.datestr   || Roundel.getDatestr())
     this.updatedAt   = (obj.updatedAt || moment().format('YYYYMMDD'))
@@ -324,7 +324,7 @@ export class Roundel implements TY.Roundel {
     }
   }
 
-  static from(obj: Partial<Roundel>): Roundel {
+  static from(obj: TY.RoundelFodder): Roundel {
     return new Roundel(obj.letters!, obj)
   }
 

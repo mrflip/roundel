@@ -25,11 +25,13 @@ function setLocalStorage(key: string, val: unknown): void {
 }
 
 function playerKey(playerID: string, baseKey: string) {
-  return [playerID, baseKey].join('_')
+  return [playerID.toLowerCase().replaceAll(/\W+/g, ''), baseKey].join('_')
 }
 
 export function storeBag(storageKey: string, bag: object) {
-  setLocalStorage(storageKey, JSON.stringify(bag))
+  const contents = JSON.stringify(bag)
+  console.log('stored', storageKey, contents.length / 1e3, 'kChars')
+  setLocalStorage(storageKey, contents)
 }
 
 export function loadBagWithFallback<T>(storageKey: string, fallback: T): T {
@@ -75,7 +77,7 @@ export function storeRoundels(roundelsIndex: TY.RoundelsIndex) {
 }
 
 export function loadPrefs(playerID: string) {
-  return loadBagWithFallback(playerKey(playerID, 'roundelPrefs'), { sortAxis: 'date' })
+  return loadBagWithFallback(playerKey(playerID, 'roundelPrefs'), { sortAxis: 'date', search: '' })
 }
 
 export function storePrefs(playerID: string, prefs: TY.RoundelPrefs) {
@@ -90,9 +92,18 @@ export function storeRoundel(playerID: string, roundel: TY.Roundel) {
   storeRoundels(RoundelsIndex)
 }
 
-export function loadRoundel(playerID: string, raw: Partial<Roundel>): Roundel {
+export function loadRoundel(playerID: string, raw: TY.RoundelFodder): Roundel {
   const letters = Roundel.normalize(raw.letters!)
   const loaded  = loadBag(playerKey(playerID, letters))
-  const bag = _.merge({}, loaded || {}, raw, { letters, stored: (!! loaded) })
+  const dna     = RoundelsIndex[letters.toUpperCase()]
+  const bag = _.merge({}, loaded || {}, raw, { ...dna, letters, stored: (!! loaded) })
   return bag as Roundel
+}
+
+export function loadGlobals(): TY.RoundelGlobals {
+  return loadBagWithFallback('roundelGlobals', { playerIDs: [] })
+}
+
+export function storeGlobals(globals: TY.RoundelGlobals) {
+  return storeBag('roundelGlobals', globals)
 }

@@ -4,6 +4,7 @@ import {
 
 import Roundels from '@/views/Roundels.vue';
 import Guesser  from '@/views/Guesser.vue';
+import Lobby    from '@/views/Lobby.vue';
 
 console.log(createWebHistory === createWebHashHistory)
 const BASE_ROUTE = '/'
@@ -24,8 +25,14 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
-    path: '/:catchAll(.*)',
-    redirect: BASE_ROUTE + 'flip',
+    path:       BASE_ROUTE,
+    component:  Lobby,
+    props:      true,
+  },
+
+  {
+    path: '/:catchAll(.*)*',
+    redirect:   BASE_ROUTE,
   },
 ];
 

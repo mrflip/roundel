@@ -37,6 +37,15 @@ export interface Roundel {
   up?:          string
 }
 
+export interface RoundelFodder {
+  letters:      string
+  datestr?:     string
+  updatedAt?:   string
+  gooduns?:     string[] | Guess[]
+  nogos?:       string[] | Guess[]
+  ol?:          boolean
+}
+
 export interface RoundelSketch {
   ll:           string
   dt:           string
@@ -77,6 +86,10 @@ export interface Guess {
 export interface RoundelPrefs {
   sortAxis:     string
   search:       string
+}
+
+export interface RoundelGlobals {
+  playerIDs:    string[]
 }
 
 export interface LexMatches {
